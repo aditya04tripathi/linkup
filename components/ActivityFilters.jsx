@@ -15,14 +15,14 @@ const ActivityFilters = () => {
 	const [activityType, setActivityType] = useState("");
 
 	return (
-		<div className="flex w-full items-center gap-2.5">
+		<div className="flex flex-col md:flex-row w-full items-center gap-2.5">
 			<Input
 				placeholder="Search Activities..."
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 			/>
 			<Select value={activityType} onValueChange={setActivityType}>
-				<SelectTrigger className={"min-w-[200px]"}>
+				<SelectTrigger className={"w-full min-w-[200px] md:max-w-[200px]"}>
 					<SelectValue placeholder="All Types" />
 				</SelectTrigger>
 				<SelectContent>

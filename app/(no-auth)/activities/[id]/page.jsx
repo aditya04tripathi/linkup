@@ -24,12 +24,11 @@ const ActivityPage = async ({ params }) => {
 	const hasJoined = activity.participants.includes(currentUser.id);
 
 	return (
-		<div className={"max-w-3xl mx-auto p-5"}>
-			<div className={cn("rounded-lg shadow-md overflow-hidden border")}>
+		<div className={"w-full"}>
+			<div className={cn("rounded-lg overflow-hidden")}>
 				<div className="p-6">
 					<ActivityDetail activity={activity} formatDate={formatDate} />
-
-					<div className="flex flex-col sm:flex-row justify-end gap-4 pt-4 border-t border-border">
+					<div className="flex flex-col sm:flex-row justify-end gap-4 pt-4">
 						<Button variant="outline" asChild>
 							<Link href="/activities">Back to Activities</Link>
 						</Button>

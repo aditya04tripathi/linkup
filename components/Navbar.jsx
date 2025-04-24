@@ -7,20 +7,34 @@ import { Home, Calendar, Plus, User, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { Users } from "lucide-react";
+import Link from "next/link";
 
 function ButtonGroup({ isMobile = false }) {
 	const router = useRouter();
+	const activeRoute = usePathname();
+
+	const isActive = (route) => {
+		console.log(route, activeRoute, "route", `activeRoute`);
+		return activeRoute === route;
+	};
+
+	const buttonClass = (route) =>
+		cn(
+			"text-sm flex gap-2 items-center",
+			isMobile ? "flex-col" : "flex-row",
+			isActive(route)
+				? "bg-card text-card-foreground"
+				: "bg-background text-foreground"
+		);
 
 	return (
 		<>
 			<Button
 				onClick={() => router.push("/")}
 				variant="ghost"
-				className={cn(
-					"text-sm flex gap-2 items-center",
-					isMobile ? "flex-col" : "flex-row"
-				)}
+				className={buttonClass("/")}
 			>
 				<Home />
 				Home
@@ -28,10 +42,7 @@ function ButtonGroup({ isMobile = false }) {
 			<Button
 				onClick={() => router.push("/activities")}
 				variant="ghost"
-				className={cn(
-					"text-sm flex gap-2 items-center",
-					isMobile ? "flex-col" : "flex-row"
-				)}
+				className={buttonClass("/activities")}
 			>
 				<Calendar />
 				Activities
@@ -47,24 +58,18 @@ function ButtonGroup({ isMobile = false }) {
 			<Button
 				onClick={() => router.push("/profile")}
 				variant="ghost"
-				className={cn(
-					"text-sm flex gap-2 items-center",
-					isMobile ? "flex-col" : "flex-row"
-				)}
+				className={buttonClass("/profile")}
 			>
 				<User />
 				Profile
 			</Button>
 			<Button
-				onClick={() => router.push("/friends/find")}
+				onClick={() => router.push("/friends")}
 				variant="ghost"
-				className={cn(
-					"text-sm flex gap-2 items-center",
-					isMobile ? "flex-col" : "flex-row"
-				)}
+				className={buttonClass("/friends")}
 			>
-				<UserPlus />
-				Find Friends
+				<Users />
+				Friends
 			</Button>
 		</>
 	);
@@ -78,7 +83,9 @@ const Navbar = ({ children }) => {
 		return (
 			<div className="w-full h-screen relative">
 				<div className="bg-background fixed top-0 left-0 right-0 h-20 border-b-2 z-10 flex flex-row justify-between items-center px-10 w-full">
-					<h1>LinkUp</h1>
+					<Link href="/">
+						<h1>LinkUp</h1>
+					</Link>
 
 					<div className="flex items-center gap-2">
 						<Button variant={"secondary"}>
@@ -96,7 +103,7 @@ const Navbar = ({ children }) => {
 					</div>
 				</div>
 				<ScrollArea className="absolute top-20 right-0 left-0 bottom-10 h-[calc(100vh-10rem)]">
-					<div className="h-auto mx-auto w-full max-w-3xl">{children}</div>
+					<div className="h-auto mx-auto w-full max-w-3xl p-5">{children}</div>
 				</ScrollArea>
 				<div className="bg-background fixed bottom-0 left-0 right-0 h-20 border-t-2 z-10 flex flex-row justify-around items-center w-full">
 					<ButtonGroup isMobile={isMobile} />
@@ -107,7 +114,9 @@ const Navbar = ({ children }) => {
 		return (
 			<div className="w-full h-screen relative">
 				<div className="bg-background fixed top-0 left-0 right-0 h-20 border-b-2 z-10 flex flex-row justify-between px-10 items-center w-full">
-					<h1>LinkUp</h1>
+					<Link href="/">
+						<h1>LinkUp</h1>
+					</Link>
 
 					<div className="flex flex-1 justify-center items-center gap-2">
 						<ButtonGroup isMobile={isMobile} />
@@ -121,18 +130,20 @@ const Navbar = ({ children }) => {
 							<Plus />
 							Create
 						</Button>
-						<Avatar>
-							<AvatarFallback>JD</AvatarFallback>
-							<AvatarImage
-								src="https://picsum.photos/100"
-								alt="User"
-								className="rounded-full w-full h-full"
-							/>
-						</Avatar>
+						<Link href="/profile">
+							<Avatar>
+								<AvatarFallback>JD</AvatarFallback>
+								<AvatarImage
+									src="https://picsum.photos/100"
+									alt="User"
+									className="rounded-full w-full h-full"
+								/>
+							</Avatar>
+						</Link>
 					</div>
 				</div>
 				<ScrollArea className="absolute top-20 right-0 left-0 bottom-0 h-[calc(100vh-5rem)]">
-					<div className="w-full h-full max-w-4xl mx-auto">{children}</div>
+					<div className="w-full h-full max-w-4xl mx-auto p-5">{children}</div>
 				</ScrollArea>
 			</div>
 		);

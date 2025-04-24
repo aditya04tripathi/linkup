@@ -6,7 +6,7 @@ import ActivityFilters from "@/components/ActivityFilters";
 
 const ActivitiesPage = () => {
 	return (
-		<div className="p-5">
+		<div>
 			<div className="w-full flex flex-col gap-5 mb-5">
 				<div className="flex w-full items-center justify-between">
 					<h1>Discover Activities</h1>

@@ -50,22 +50,28 @@ const ActivityDetail = ({ activity, formatDate }) => {
 				{activity.description}
 			</p>
 
-			<div className="flex flex-wrap gap-2 mb-6">
-				{Array.from({ length: activity.participants.length }).map((_, i) => (
-					<div className="flex items-center justify-center bg-card size-10 rounded-full">
-						{i}
-					</div>
-				))}
-				{Array.from({
-					length: Math.max(
-						0,
-						activity.maxParticipants - activity.participants.length
-					),
-				}).map((_, i) => (
-					<div className="flex items-center justify-center bg-muted/30 size-10 rounded-full">
-						❌
-					</div>
-				))}
+			<div className="flex flex-col flex-wrap gap-2 mb-6">
+				<h1>
+					Participants ({activity.participants.length}/
+					{activity.maxParticipants})
+				</h1>
+				<div className="flex gap-2">
+					{Array.from({ length: activity.participants.length }).map((_, i) => (
+						<div className="flex items-center justify-center bg-card size-10 rounded-full">
+							{i}
+						</div>
+					))}
+					{Array.from({
+						length: Math.max(
+							0,
+							activity.maxParticipants - activity.participants.length
+						),
+					}).map((_, i) => (
+						<div className="border border-dashed flex items-center justify-center bg-muted/30 size-10 rounded-full">
+							+
+						</div>
+					))}
+				</div>
 			</div>
 
 			<div className="bg-muted/50 p-4 rounded-md">

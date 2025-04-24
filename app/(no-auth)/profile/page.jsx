@@ -7,7 +7,7 @@ import ProfileSlider from "@/components/ProfileSlider";
 
 export default function Profile() {
 	return (
-		<div className="p-5">
+		<div>
 			<h1>Welcome, John Doe!</h1>
 			<div className="relative flex flex-col items-center gap-5 border rounded-lg mt-5 p-10">
 				<EditPersonalDetailsSheet />
