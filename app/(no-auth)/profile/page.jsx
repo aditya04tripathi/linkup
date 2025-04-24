@@ -4,11 +4,21 @@ import { academicInterests, hobbiesList } from "@/lib/utils";
 import EditPersonalityProfile from "@/components/EditPersonalityTraits";
 import EditPersonalDetailsSheet from "@/components/EditProfileDetails";
 import ProfileSlider from "@/components/ProfileSlider";
+import { Button } from "@/components/ui/button";
+import { Bell } from "lucide-react";
+import Link from "next/link";
 
 export default function Profile() {
 	return (
 		<div>
-			<h1>Welcome, John Doe!</h1>
+			<div className="w-full flex justify-between items-center">
+				<h1>Welcome, John Doe!</h1>
+				<Link href="/notifications">
+					<Button>
+						<Bell />
+					</Button>
+				</Link>
+			</div>
 			<div className="relative flex flex-col items-center gap-5 border rounded-lg mt-5 p-10">
 				<EditPersonalDetailsSheet />
 				<Image

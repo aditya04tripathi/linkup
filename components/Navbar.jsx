@@ -82,27 +82,7 @@ const Navbar = ({ children }) => {
 	if (isMobile) {
 		return (
 			<div className="w-full h-screen relative">
-				<div className="bg-background fixed top-0 left-0 right-0 h-20 border-b-2 z-10 flex flex-row justify-between items-center px-10 w-full">
-					<Link href="/">
-						<h1>LinkUp</h1>
-					</Link>
-
-					<div className="flex items-center gap-2">
-						<Button variant={"secondary"}>
-							<Plus />
-							Create
-						</Button>
-						<Avatar>
-							<AvatarFallback>JD</AvatarFallback>
-							<AvatarImage
-								src="https://picsum.photos/100"
-								alt="User"
-								className="rounded-full w-full h-full"
-							/>
-						</Avatar>
-					</div>
-				</div>
-				<ScrollArea className="absolute top-20 right-0 left-0 bottom-10 h-[calc(100vh-10rem)]">
+				<ScrollArea className="fixed top-0 right-0 left-0 bottom-10 h-[calc(100vh-5rem)]">
 					<div className="h-auto mx-auto w-full max-w-3xl p-5">{children}</div>
 				</ScrollArea>
 				<div className="bg-background fixed bottom-0 left-0 right-0 h-20 border-t-2 z-10 flex flex-row justify-around items-center w-full">
