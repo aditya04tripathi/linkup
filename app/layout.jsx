@@ -14,7 +14,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 	return (
-		<html lang="en">
+		<html
+			suppressContentEditableWarning={true}
+			suppressHydrationWarning={true}
+			lang="en"
+		>
 			<body
 				className={`${montserrat.variable} dark antialiased bg-background text-foreground`}
 			>

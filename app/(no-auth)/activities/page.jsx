@@ -102,13 +102,13 @@ const ActivitiesPage = () => {
 						)}
 						key={idx}
 					>
-						<div className="flex-1 w-full flex items-center justify-between">
-							<h3 className="flex-[0.8]">{activity.title}</h3>
-							<div className="flex-[0.2] bg-muted text-muted-foreground text-center py-1 px-2 rounded-full">
+						<div>
+							<div className="text-xs text-muted-foreground">
 								{activity.match * 100}% match
 							</div>
+							<h3 className="flex-[0.8]">{activity.title}</h3>
+							<p className="text-muted-foreground">{activity.description}</p>
 						</div>
-						<p className="text-muted-foreground">{activity.description}</p>
 						<div className="w-full flex flex-col gap-2.5">
 							<div className="flex items-center gap-2">
 								<Calendar size={20} />

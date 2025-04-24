@@ -96,7 +96,7 @@ const Navbar = ({ children }) => {
 					</div>
 				</div>
 				<ScrollArea className="absolute top-20 right-0 left-0 bottom-10 h-[calc(100vh-10rem)]">
-					<div className="w-full h-auto mx-auto container">{children}</div>
+					<div className="h-auto mx-auto w-full max-w-3xl">{children}</div>
 				</ScrollArea>
 				<div className="bg-background fixed bottom-0 left-0 right-0 h-20 border-t-2 z-10 flex flex-row justify-around items-center w-full">
 					<ButtonGroup isMobile={isMobile} />
@@ -132,7 +132,7 @@ const Navbar = ({ children }) => {
 					</div>
 				</div>
 				<ScrollArea className="absolute top-20 right-0 left-0 bottom-0 h-[calc(100vh-5rem)]">
-					<div className="w-full h-full container mx-auto">{children}</div>
+					<div className="w-full h-full max-w-4xl mx-auto">{children}</div>
 				</ScrollArea>
 			</div>
 		);
