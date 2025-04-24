@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,69 +8,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { ACTIVITIES, cn } from "@/lib/utils";
 import { User } from "lucide-react";
 import { Clock } from "lucide-react";
 import { Calendar } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const ActivitiesPage = () => {
-	const router = useRouter();
-	const ACTIVITIES = [
-		{
-			title: "Study Group: Machine Learning Fundamentals",
-			description:
-				"Join us to study machine learning concepts and work through practice problems together.",
-			date: "2023-10-15",
-			time: "18:00",
-			participants: "2/5",
-			match: 0.4,
-			duration_m: 60,
-			type: "academics",
-		},
-		{
-			title: "Book Club: The Great Gatsby",
-			description:
-				"Join us for a discussion on F. Scott Fitzgerald's classic novel.",
-			date: "2023-10-20",
-			time: "19:00",
-			participants: "3/10",
-			match: 0.6,
-			duration_m: 90,
-			type: "social",
-		},
-		{
-			title: "Cooking Class: Italian Cuisine",
-			description:
-				"Learn to cook authentic Italian dishes with our expert chef.",
-			date: "2023-10-25",
-			time: "17:00",
-			participants: "1/8",
-			match: 0.7,
-			duration_m: 120,
-			type: "hobby",
-		},
-		{
-			title: "Yoga Session: Relax and Unwind",
-			description:
-				"Join us for a relaxing yoga session to help you unwind after a long week.",
-			date: "2023-10-30",
-			time: "18:30",
-			participants: "4/10",
-			match: 0.9,
-			duration_m: 45,
-			type: "wellness",
-		},
-	];
-
 	return (
 		<div className="p-5">
 			<div className="w-full flex flex-col gap-5 mb-5">
 				<div className="flex w-full items-center justify-between">
 					<h1>Discover Activities</h1>
-					<Button onClick={() => router.push("/activities/add")}>
-						Create Activity
-					</Button>
+					<Button>Create Activity</Button>
 				</div>
 				<div className="flex w-full items-center gap-2.5">
 					<Input placeholder="Search Activities..." />
@@ -94,17 +41,17 @@ const ActivitiesPage = () => {
 					<div
 						className={cn(
 							"gap-2.5 flex flex-col justify-between items-stretch border w-full p-5 rounded-lg",
-							activity.match > 0.75
-								? "border-green-400"
-								: activity.match > 0.5
-								? "border-amber-400"
-								: "border-red-400"
+							activity.compatibility < 50
+								? "border-red-400"
+								: activity.compatibility < 75
+								? "border-yellow-400"
+								: "border-green-400"
 						)}
 						key={idx}
 					>
 						<div>
 							<div className="text-xs text-muted-foreground">
-								{activity.match * 100}% match
+								{activity.compatibility}% match
 							</div>
 							<h3 className="flex-[0.8]">{activity.title}</h3>
 							<p className="text-muted-foreground">{activity.description}</p>
