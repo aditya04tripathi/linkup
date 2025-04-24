@@ -1,6 +1,7 @@
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const montserrat = Montserrat({
 	variable: "--font-montserrat",
@@ -22,8 +23,10 @@ export default function RootLayout({ children }) {
 			<body
 				className={`${montserrat.variable} dark antialiased bg-background text-foreground`}
 			>
-				{children}
-				<Toaster />
+				<TooltipProvider>
+					{children}
+					<Toaster />
+				</TooltipProvider>
 			</body>
 		</html>
 	);

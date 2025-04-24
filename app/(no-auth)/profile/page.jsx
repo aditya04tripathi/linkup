@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { academicInterests, hobbiesList } from "@/lib/utils";
 import EditPersonalityProfile from "@/components/EditPersonalityTraits";
 import EditPersonalDetailsSheet from "@/components/EditProfileDetails";
+import ProfileSlider from "@/components/ProfileSlider";
 
 export default function Profile() {
 	return (
@@ -34,32 +34,29 @@ export default function Profile() {
 					<EditPersonalityProfile />
 				</div>
 
-				<div className="flex w-full items-stretch flex-col gap-2">
-					<h3>Extroversion Level</h3>
-					<Slider value={[57]} />
-					<div className="w-full flex flex-1 items-center justify-between text-muted-foreground">
-						<div>Introvert</div>
-						<div>Extrovert</div>
-					</div>
-				</div>
+				<ProfileSlider
+					title="Extroversion Level"
+					value={57}
+					leftLabel="Introvert"
+					rightLabel="Extrovert"
+				/>
 
-				<div className="flex w-full items-stretch flex-col gap-2">
-					<h3>Energy Level</h3>
-					<Slider value={[87]} />
-					<div className="w-full flex flex-1 items-center justify-between text-muted-foreground">
-						<div>Low Energy</div>
-						<div>High Energy</div>
-					</div>
-				</div>
+				<ProfileSlider
+					title="Energy Level"
+					value={87}
+					leftLabel="Low Energy"
+					rightLabel="High Energy"
+				/>
 
-				<div className="flex w-full items-stretch flex-col gap-2">
-					<h3>Preferred Group Size (3-5)</h3>
-					<Slider value={[3, 5]} max={10} />
-					<div className="w-full flex flex-1 items-center justify-between text-muted-foreground">
-						<div>0</div>
-						<div>10</div>
-					</div>
-				</div>
+				<ProfileSlider
+					title="Preferred Group Size (3-5)"
+					value={[3, 5]}
+					min={0}
+					max={10}
+					leftLabel="0"
+					rightLabel="10"
+					range
+				/>
 
 				<div className="flex w-full items-stretch flex-col gap-2">
 					<h3>Academic Interests</h3>
