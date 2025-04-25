@@ -3,7 +3,7 @@ const nextConfig = {
 	images: {
 		remotePatterns: [{ hostname: "picsum.photos" }],
 	},
-	reactStrictMode: true,
+	reactStrictMode: false,
 	eslint: {
 		ignoreDuringBuilds: true,
 	},

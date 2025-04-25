@@ -1,26 +1,10 @@
-import NotificationsList from "@/components/NotificationsList";
-import { MOCK_NOTIFICATIONS } from "@/lib/utils";
+import { NotificationsClient } from "./page-client";
 
-async function getNotifications() {
-	// In a real app, this would fetch notifications from an API
-	// Example: const res = await fetch('https://api.example.com/notifications', { cache: 'no-store' });
-	// return res.json();
+export const metadata = {
+	title: "Notifications | LinkUp",
+	description: "Stay updated with your latest activity notifications",
+};
 
-	// For now, return mock data
-	return MOCK_NOTIFICATIONS;
-}
-
-export default async function NotificationsPage() {
-	// Fetch notifications server-side
-	const notifications = await getNotifications();
-
-	return (
-		<div className="w-full max-w-4xl mx-auto">
-			<div className="mb-6">
-				<h1 className="text-2xl font-bold">Notifications</h1>
-			</div>
-
-			<NotificationsList initialNotifications={notifications} />
-		</div>
-	);
+export default function NotificationsPage() {
+	return <NotificationsClient />;
 }

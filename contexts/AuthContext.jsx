@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
 			if (data.ok) {
 				toast.success("Logged in successfully");
 				setUser(data.message);
+				setToken(data.message.token);
 				localStorage.setItem("user", JSON.stringify(data.message));
 				localStorage.setItem("token", data.message.token);
 				router.push("/");
@@ -71,13 +72,50 @@ export const AuthProvider = ({ children }) => {
 
 	const logout = () => {
 		setUser(null);
+		setToken(null);
 		localStorage.removeItem("user");
+		localStorage.removeItem("token");
 		router.push("/login");
+	};
+
+	const updateUser = async (updatedUser) => {
+		try {
+			if (
+				updatedUser.profileImage &&
+				updatedUser.profileImage instanceof File
+			) {
+				const imageUrl = await uploadToCloudinary(updatedUser.profileImage);
+				if (imageUrl) {
+					updatedUser.profilePictureUrl = imageUrl;
+				}
+				delete updatedUser.profileImage;
+			}
+
+			if (token) {
+				await axios.put("/api/auth/me", updatedUser, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+			}
+
+			setUser((prevUser) => ({
+				...prevUser,
+				...updatedUser,
+			}));
+
+			const updatedUserData = { ...user, ...updatedUser };
+			localStorage.setItem("user", JSON.stringify(updatedUserData));
+			toast.success("Profile updated successfully");
+			return updatedUserData;
+		} catch (error) {
+			console.error("Profile update failed:", error);
+			toast.error("Failed to update profile");
+			throw error;
+		}
 	};
 
 	return (
 		<AuthContext.Provider
-			value={{ user, loading, token, signIn, signUp, logout }}
+			value={{ user, loading, token, signIn, signUp, logout, updateUser }}
 		>
 			{children}
 		</AuthContext.Provider>

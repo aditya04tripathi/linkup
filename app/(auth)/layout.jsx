@@ -1,10 +1,11 @@
 import Image from "next/image";
 import React from "react";
 
-const AuthLayout = ({ children }) => {
+export const AuthLayout = ({ children }) => {
 	return (
 		<div className="w-full h-screen flex items-center justify-center">
 			<div className="h-[80%] w-[80%] grid grid-cols-1 md:grid-cols-2 border rounded overflow-clip">
+				{/* This isn't a profile picture, so we'll keep using Image */}
 				<Image
 					src="https://picsum.photos/1080"
 					alt="Background"

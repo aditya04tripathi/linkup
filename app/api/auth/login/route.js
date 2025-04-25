@@ -55,6 +55,7 @@ export const POST = async (req) => {
 			}
 		);
 	} catch (error) {
+		console.log(error);
 		return Response.json(
 			{ ok: false, message: error.message },
 			{

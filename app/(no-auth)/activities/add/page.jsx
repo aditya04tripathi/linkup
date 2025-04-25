@@ -1,16 +1,10 @@
-import AddActivityForm from "@/components/AddActivityForm";
+import AddActivityClient from "./page-client";
 
-const CreateActivity = () => {
-	return (
-		<div className="w-full flex items-center justify-start">
-			<div className="rounded-lg w-full">
-				<h1 className="text-2xl font-bold mb-6">Create a LinkUp Activity</h1>
-				<div className="rounded-lg shadow-md">
-					<AddActivityForm />
-				</div>
-			</div>
-		</div>
-	);
+export const metadata = {
+	title: "Create Activity | LinkUp",
+	description: "Create a new activity to connect with others",
 };
 
-export default CreateActivity;
+export default function AddActivityPage() {
+	return <AddActivityClient />;
+}

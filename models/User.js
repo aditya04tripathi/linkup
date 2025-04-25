@@ -68,6 +68,14 @@ const UserSchema = new Schema(
 			type: Number,
 			default: 0,
 		},
+		location: {
+			type: String,
+			default: "",
+		},
+		occupation: {
+			type: String,
+			default: "",
+		},
 	},
 	{
 		timestamps: true,

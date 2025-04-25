@@ -90,6 +90,7 @@ export const POST = async (req) => {
 			location,
 			dateTime,
 			type,
+			participants: [decoded.id],
 			maxParticipants,
 			duration,
 		});

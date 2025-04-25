@@ -1,75 +1,32 @@
+import React from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { UserPlus } from "lucide-react";
-import { User, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
-const ProfileCard = ({ profile, isFriend }) => {
+const ProfileCard = ({ profile, isFriend = false }) => {
 	return (
-		<div
-			className={cn(
-				"gap-2.5 flex flex-col justify-between items-stretch border w-full p-5 rounded-lg"
-			)}
-		>
-			<div className="flex items-center gap-4">
-				<div className="overflow-hidden rounded-full size-16 bg-muted">
-					{profile.avatar ? (
-						<img
-							src={profile.avatar}
-							alt={profile.name}
-							className="object-cover w-full h-full"
-						/>
-					) : (
-						<div className="flex items-center justify-center w-full h-full bg-primary/10">
-							<User size={24} />
-						</div>
-					)}
-				</div>
-				<div>
-					<h3 className="font-medium">{profile.name}</h3>
-				</div>
-			</div>
+		<div className="border rounded-lg p-4 flex flex-col items-center">
+			<Avatar className="h-20 w-20 mb-3">
+				<AvatarImage src={profile.avatar || ""} alt={profile.name} />
+				<AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+			</Avatar>
 
-			<p className="text-muted-foreground">{profile.bio}</p>
+			<h3 className="font-medium text-lg">{profile.name}</h3>
+			<p className="text-sm text-muted-foreground mb-2">{profile.occupation}</p>
+			<p className="text-sm text-center mb-4 line-clamp-2">{profile.bio}</p>
 
-			{profile.interests && profile.interests.length > 0 && (
-				<div className="flex flex-wrap gap-1.5">
-					{profile.interests.map((interest, index) => (
-						<span
-							key={index}
-							className="px-2 py-1 text-xs rounded-full bg-muted"
-						>
-							{interest}
-						</span>
-					))}
-				</div>
-			)}
-
-			<div className="flex w-full mt-2">
-				<Button asChild className="flex-1 w-full" variant="link">
-					<Link href={`/user/${profile._id}`}>
-						<span className="flex items-center gap-1">
-							<User size={16} />
-							View Profile
-						</span>
-					</Link>
-				</Button>
-				{isFriend ? (
-					<Link href={`/message/${profile._id}`}>
-						<Button className="flex-1 w-full">
-							<span className="flex items-center gap-1">
-								<MessageCircle size={16} />
-								Message
-							</span>
-						</Button>
-					</Link>
-				) : (
-					<Button className="flex-1 w-full">
-						<span className="flex items-center gap-1">
-							<UserPlus size={16} />
-							Connect
-						</span>
+			<div className="mt-auto w-full flex gap-2">
+				<Link href={`/user/${profile.username}`} className="flex-1">
+					<Button variant="outline" className="w-full">
+						View Profile
 					</Button>
+				</Link>
+				{!isFriend ? (
+					<Button className="flex-1">Add Friend</Button>
+				) : (
+					<Link href={`/message/${profile.username}`} className="flex-1">
+						<Button className="w-full">Message</Button>
+					</Link>
 				)}
 			</div>
 		</div>
