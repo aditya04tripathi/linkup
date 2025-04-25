@@ -66,14 +66,11 @@ export const ActivitiesClient = () => {
 
 	return (
 		<div>
-			<div className="w-full flex flex-col gap-5 mb-5">
-				<div className="flex w-full items-center justify-between">
-					<h1>Discover Activities</h1>
-					<Button asChild>
-						<Link href="/activities/add">Create Activity</Link>
-					</Button>
-				</div>
-				<ActivityFilters />
+			<div className="w-full flex justify-between gap-5 mb-5">
+				<h1>Discover Activities</h1>
+				<Button asChild>
+					<Link href="/activities/add">Create Activity</Link>
+				</Button>
 			</div>
 			{activities?.length === 0 ? (
 				<div className="flex flex-col items-center justify-center h-96">

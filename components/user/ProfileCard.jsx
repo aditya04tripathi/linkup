@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UserPlus } from "lucide-react";
-import { User, MessageCircle } from "lucide-react";
+import { User } from "lucide-react";
 import Link from "next/link";
 
 export const ProfileCard = ({ profile, isFriend }) => {
@@ -47,23 +47,9 @@ export const ProfileCard = ({ profile, isFriend }) => {
 
 			<div className="flex w-full mt-2">
 				<Button asChild className="flex-1 w-full" variant="link">
-					<Link href={`/user/${profile._id}`}>
-						<span className="flex items-center gap-1">
-							<User size={16} />
-							View Profile
-						</span>
-					</Link>
+					<Link href={`/user/${profile._id}`}>View Profile</Link>
 				</Button>
-				{isFriend ? (
-					<Link href={`/message/${profile._id}`}>
-						<Button className="flex-1 w-full">
-							<span className="flex items-center gap-1">
-								<MessageCircle size={16} />
-								Message
-							</span>
-						</Button>
-					</Link>
-				) : (
+				{!isFriend && (
 					<Button className="flex-1 w-full">
 						<span className="flex items-center gap-1">
 							<UserPlus size={16} />

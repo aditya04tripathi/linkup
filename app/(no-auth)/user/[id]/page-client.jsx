@@ -92,18 +92,13 @@ export function UserProfileClient({ id }) {
 
 					<div className="flex gap-2">
 						{isFollowing ? (
-							<>
-								<Link href={`/message/${user._id}`}>
-									<Button>Message</Button>
-								</Link>
-								<Button
-									variant="outline"
-									onClick={handleFollowToggle}
-									disabled={actionLoading}
-								>
-									Unfollow
-								</Button>
-							</>
+							<Button
+								variant="outline"
+								onClick={handleFollowToggle}
+								disabled={actionLoading}
+							>
+								Unfollow
+							</Button>
 						) : (
 							<Button onClick={handleFollowToggle} disabled={actionLoading}>
 								Follow

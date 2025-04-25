@@ -11,6 +11,7 @@ export const ActivityActions = ({ activity, isPastEvent, hasJoined }) => {
 	const { joinActivity, leaveActivity } = useActivity();
 
 	useEffect(() => {
+		console.log("hasJoined", hasJoined);
 		setJoinStatus(hasJoined);
 	}, [hasJoined]);
 

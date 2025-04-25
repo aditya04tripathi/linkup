@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NotificationItem from "@/components/user/NotificationItem";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNotification } from "@/contexts/NotificationContext";
 
-export function NotificationsList({ initialNotifications }) {
-	const [notifications, setNotifications] = useState(initialNotifications);
+export function NotificationsList() {
+	const { notifications, markAsRead, markAllAsRead } = useNotification();
 	const [activeTab, setActiveTab] = useState("all");
 
 	const unreadCount = notifications.filter((n) => !n.read).length;
@@ -20,35 +21,13 @@ export function NotificationsList({ initialNotifications }) {
 			? notifications.filter((n) => !n.read)
 			: notifications.filter((n) => n.type === activeTab);
 
-	const markAsRead = (id) => {
-		setNotifications((prev) =>
-			prev.map((notification) =>
-				notification.id === id ? { ...notification, read: true } : notification
-			)
-		);
-
-		// In a real app, this would call an API to update the server
-		// Example: fetch('/api/notifications/${id}/read', { method: 'PUT' })
+	const handleMarkAsRead = (id) => {
+		markAsRead(id);
 	};
 
-	const markAllAsRead = () => {
-		setNotifications((prev) =>
-			prev.map((notification) => ({ ...notification, read: true }))
-		);
-
-		// In a real app, this would call an API to update the server
-		// Example: fetch('/api/notifications/read-all', { method: 'PUT' })
+	const handleMarkAllAsRead = () => {
+		markAllAsRead();
 	};
-
-	// In a real app, this would be a socket or polling mechanism to get new notifications
-	useEffect(() => {
-		// Example socket connection
-		// const socket = io(process.env.NEXT_PUBLIC_API_URL);
-		// socket.on('notification:new', (newNotification) => {
-		//   setNotifications(prev => [newNotification, ...prev]);
-		// });
-		// return () => socket.disconnect();
-	}, []);
 
 	return (
 		<Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
@@ -62,13 +41,13 @@ export function NotificationsList({ initialNotifications }) {
 						Unread
 						<span className="ml-1 text-xs">({unreadCount})</span>
 					</TabsTrigger>
-					<TabsTrigger value="friend_request">Friend</TabsTrigger>
-					<TabsTrigger value="message">Messages</TabsTrigger>
-					<TabsTrigger value="activity_invite">Activities</TabsTrigger>
+					<TabsTrigger value="activity">Activities</TabsTrigger>
+					<TabsTrigger value="friend">Friends</TabsTrigger>
+					<TabsTrigger value="system">System</TabsTrigger>
 				</TabsList>
 
 				{unreadCount > 0 && (
-					<Button variant="outline" size="sm" onClick={markAllAsRead}>
+					<Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
 						Mark all as read
 					</Button>
 				)}
@@ -80,9 +59,9 @@ export function NotificationsList({ initialNotifications }) {
 						<ScrollArea className="h-[calc(100vh-220px)]">
 							{filteredNotifications.map((notification) => (
 								<NotificationItem
-									key={notification.id}
+									key={notification._id}
 									notification={notification}
-									onMarkAsRead={markAsRead}
+									onMarkAsRead={handleMarkAsRead}
 								/>
 							))}
 						</ScrollArea>
@@ -95,7 +74,7 @@ export function NotificationsList({ initialNotifications }) {
 									? "You don't have any notifications"
 									: activeTab === "unread"
 									? "No unread notifications"
-									: `No ${activeTab.replace("_", " ")} notifications`}
+									: `No ${activeTab} notifications`}
 							</p>
 						</div>
 					)}

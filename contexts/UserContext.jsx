@@ -162,6 +162,25 @@ export const UserProvider = ({ children }) => {
 		}
 	};
 
+	const fetchUserConversations = async () => {
+		try {
+			const { data } = await axios.get("/api/conversations", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (data.ok) {
+				return data.message;
+			} else {
+				throw new Error(data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching conversations:", error);
+			throw error;
+		}
+	};
+
 	return (
 		<UserContext.Provider
 			value={{
@@ -174,6 +193,7 @@ export const UserProvider = ({ children }) => {
 				updateUserProfile,
 				fetchUsers,
 				fetchUserById,
+				fetchUserConversations,
 			}}
 		>
 			{children}

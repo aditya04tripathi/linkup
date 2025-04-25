@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import * as jwt from "jsonwebtoken";
+import { createNotification } from "@/lib/notifications";
 
 export const POST = async (req) => {
 	const { email, password } = await req.json();
@@ -42,6 +43,14 @@ export const POST = async (req) => {
 			},
 			process.env.JWT_SECRET
 		);
+
+		// Create login notification
+		await createNotification(
+			user._id,
+			"system",
+			`Welcome back, ${user.name || user.email}!`
+		);
+
 		return Response.json(
 			{
 				ok: true,

@@ -168,7 +168,7 @@ export const ActivityProvider = ({ children }) => {
 
 	const hasUserJoined = (activity) => {
 		if (!user || !activity) return false;
-		return activity.participants?.includes(user._id);
+		return activity.participants.includes(user._id);
 	};
 
 	return (

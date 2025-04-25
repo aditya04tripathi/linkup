@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import { headers } from "next/headers";
 import * as jwt from "jsonwebtoken";
+import { createNotification } from "@/lib/notifications";
 
 export const POST = async (req, { params }) => {
 	const { id } = await params;
@@ -55,6 +56,14 @@ export const POST = async (req, { params }) => {
 			{
 				new: true,
 			}
+		);
+
+		// Create notification for the user being followed
+		await createNotification(
+			id,
+			"friend",
+			`${updatedUser.name || updatedUser.email} started following you!`,
+			{ relatedId: followFrom, relatedModel: "User" }
 		);
 
 		return Response.json(

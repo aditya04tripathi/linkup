@@ -1,45 +1,15 @@
 "use client";
 
 import { NotificationsList } from "@/components/user/NotificationsList";
-import { MOCK_NOTIFICATIONS } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNotification } from "@/contexts/NotificationContext";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { toast } from "sonner";
+import { useEffect } from "react";
 
 export const NotificationsClient = () => {
 	const { user } = useAuth();
+	const { loading } = useNotification();
 	const router = useRouter();
-	const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
-	const [loading, setLoading] = useState(true);
-
-	// In a real app, fetch notifications from API
-	const fetchNotifications = async () => {
-		try {
-			setLoading(true);
-			// Comment out in real implementation and use API data instead
-			// const { data } = await axios.get("/api/notifications");
-			// if (data.ok) {
-			//   setNotifications(data.message);
-			// }
-
-			// This is just for demo purposes
-			setTimeout(() => {
-				setNotifications(MOCK_NOTIFICATIONS);
-				setLoading(false);
-			}, 500);
-		} catch (error) {
-			console.error("Error fetching notifications:", error);
-			toast.error("Failed to load notifications");
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		fetchNotifications();
-	}, []);
 
 	useEffect(() => {
 		if (!user) {
@@ -64,7 +34,7 @@ export const NotificationsClient = () => {
 					))}
 				</div>
 			) : (
-				<NotificationsList initialNotifications={notifications} />
+				<NotificationsList />
 			)}
 		</div>
 	);

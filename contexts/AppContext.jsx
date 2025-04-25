@@ -4,6 +4,7 @@ import { createContext, useContext } from "react";
 import { AuthProvider } from "./AuthContext";
 import { UserProvider } from "./UserContext";
 import { ThemeProvider } from "./ThemeContext";
+import { NotificationProvider } from "./NotificationContext";
 
 // Create a combined App context to avoid deeply nested providers
 export const AppContext = createContext(null);
@@ -20,7 +21,9 @@ export function AppProvider({ children }) {
 	return (
 		<AuthProvider>
 			<UserProvider>
-				<ThemeProvider>{children}</ThemeProvider>
+				<ThemeProvider>
+					<NotificationProvider>{children}</NotificationProvider>
+				</ThemeProvider>
 			</UserProvider>
 		</AuthProvider>
 	);

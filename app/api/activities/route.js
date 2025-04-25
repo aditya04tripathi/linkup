@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import Activity from "@/models/Activity";
 import { headers } from "next/headers";
 import * as jwt from "jsonwebtoken";
+import { createNotification } from "@/lib/notifications";
 
 export const GET = async (req) => {
 	const searchParams = req.nextUrl.searchParams;
@@ -94,6 +95,14 @@ export const POST = async (req) => {
 			maxParticipants,
 			duration,
 		});
+
+		// Create activity creation notification
+		await createNotification(
+			decoded.id,
+			"activity",
+			`You've created a new activity: ${title}`,
+			{ relatedId: newActivity._id, relatedModel: "Activity" }
+		);
 
 		return Response.json(
 			{

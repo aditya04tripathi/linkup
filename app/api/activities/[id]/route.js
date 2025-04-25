@@ -7,7 +7,7 @@ export const GET = async (req, { params }) => {
 		await connectDB();
 		const activities = await Activity.findOne({
 			_id: id,
-		}).populate("participants");
+		});
 
 		return Response.json(
 			{
