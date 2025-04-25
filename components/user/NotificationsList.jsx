@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bell } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NotificationItem from "@/components/user/NotificationItem";
@@ -11,6 +11,7 @@ import { useNotification } from "@/contexts/NotificationContext";
 export function NotificationsList() {
 	const { notifications, markAsRead, markAllAsRead } = useNotification();
 	const [activeTab, setActiveTab] = useState("all");
+	const [isMarkingAll, setIsMarkingAll] = useState(false);
 
 	const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -25,8 +26,15 @@ export function NotificationsList() {
 		markAsRead(id);
 	};
 
-	const handleMarkAllAsRead = () => {
-		markAllAsRead();
+	const handleMarkAllAsRead = async () => {
+		setIsMarkingAll(true);
+		try {
+			await markAllAsRead();
+		} catch (error) {
+			console.error("Error marking all as read:", error);
+		} finally {
+			setIsMarkingAll(false);
+		}
 	};
 
 	return (
@@ -47,8 +55,20 @@ export function NotificationsList() {
 				</TabsList>
 
 				{unreadCount > 0 && (
-					<Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
-						Mark all as read
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={handleMarkAllAsRead}
+						disabled={isMarkingAll}
+					>
+						{isMarkingAll ? (
+							<>
+								<Loader2 size={14} className="mr-1 animate-spin" />
+								Processing...
+							</>
+						) : (
+							"Mark all as read"
+						)}
 					</Button>
 				)}
 			</div>

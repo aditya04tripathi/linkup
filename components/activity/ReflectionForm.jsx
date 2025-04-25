@@ -3,13 +3,12 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export const ReflectionForm = ({ activity, isPastEvent, hasJoined }) => {
 	const [isJoining, setIsJoining] = useState(false);
 	const [isLeaving, setIsLeaving] = useState(false);
 	const [joinStatus, setJoinStatus] = useState(hasJoined);
-
-	console.log(activity, "actions");
 
 	const handleJoinActivity = async () => {
 		setIsJoining(true);
@@ -56,7 +55,14 @@ export const ReflectionForm = ({ activity, isPastEvent, hasJoined }) => {
 					disabled={isLeaving}
 					className="w-full sm:w-auto px-8"
 				>
-					{isLeaving ? "Leaving..." : "Leave Activity"}
+					{isLeaving ? (
+						<>
+							<Loader2 size={16} className="mr-2 animate-spin" />
+							Leaving...
+						</>
+					) : (
+						"Leave Activity"
+					)}
 				</Button>
 			) : (
 				<Button
@@ -67,7 +73,14 @@ export const ReflectionForm = ({ activity, isPastEvent, hasJoined }) => {
 					}
 					className="w-full sm:w-auto px-8"
 				>
-					{isJoining ? "Joining..." : "Join Activity"}
+					{isJoining ? (
+						<>
+							<Loader2 size={16} className="mr-2 animate-spin" />
+							Joining...
+						</>
+					) : (
+						"Join Activity"
+					)}
 				</Button>
 			)}
 		</div>

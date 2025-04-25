@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { UserPlus, MessageCircle } from "lucide-react";
+import { UserPlus, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
@@ -41,8 +41,12 @@ export function UserActions({ userId, isFollowing, isAuthenticated }) {
 	return (
 		<div className="flex gap-2 mt-4 md:mt-0">
 			<Button onClick={handleFollowAction} disabled={loading}>
-				<UserPlus size={16} className="mr-2" />
-				{following ? "Unfollow" : "Follow"}
+				{loading ? (
+					<Loader2 size={16} className="mr-2 animate-spin" />
+				) : (
+					<UserPlus size={16} className="mr-2" />
+				)}
+				{loading ? "Processing..." : following ? "Unfollow" : "Follow"}
 			</Button>
 
 			<Link href={`/message/${userId}`}>

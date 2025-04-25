@@ -57,8 +57,6 @@ export const POST = async (req, { params }) => {
 			}
 		);
 
-		console.log(updatedUser);
-
 		return Response.json(
 			{
 				ok: true,

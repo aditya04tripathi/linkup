@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 import { getUserNotifications } from "@/lib/notifications";
 import { connectDB } from "@/lib/mongodb";
 import Notification from "@/models/Notification";
+import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
 
 export const GET = async (req) => {
 	const headersList = await headers();
@@ -79,6 +80,13 @@ export const PATCH = async (req) => {
 				{ status: 404 }
 			);
 		}
+
+		// Increment score for reading a notification
+		await incrementUserScore(
+			id,
+			SCORE_VALUES.READ_NOTIFICATION,
+			"read notification"
+		);
 
 		return Response.json(
 			{

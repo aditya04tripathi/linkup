@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import * as jwt from "jsonwebtoken";
 import { createNotification } from "@/lib/notifications";
+import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
 
 export const POST = async (req) => {
 	const { email, password } = await req.json();
@@ -51,6 +52,9 @@ export const POST = async (req) => {
 			`Welcome back, ${user.name || user.email}!`
 		);
 
+		// Increment user score for logging in
+		await incrementUserScore(user._id, SCORE_VALUES.LOGIN, "login");
+
 		return Response.json(
 			{
 				ok: true,
@@ -64,7 +68,6 @@ export const POST = async (req) => {
 			}
 		);
 	} catch (error) {
-		console.log(error);
 		return Response.json(
 			{ ok: false, message: error.message },
 			{

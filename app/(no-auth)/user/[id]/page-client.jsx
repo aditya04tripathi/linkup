@@ -25,16 +25,10 @@ export function UserProfileClient({ id }) {
 				const userData = await fetchUserById(id);
 				setUser(userData);
 
-				console.log(userData);
 				// Check if current user is following this user
 				setIsFollowing(
 					currentUser?.friends?.some((followId) => followId === userData._id)
 				);
-				console.log(isFollowing);
-
-				// Get compatibility score
-				// const compatibilityScore = await getUserMatches(userData._id);
-				// setCompatibility(compatibilityScore * 100); // Convert to percentage
 			} catch (error) {
 				console.error("Error fetching user:", error);
 				toast.error("Failed to load user profile");

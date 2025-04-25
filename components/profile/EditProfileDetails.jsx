@@ -11,7 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Edit2 } from "lucide-react";
+import { Edit2, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 export const EditPersonalDetailsSheet = ({ initialUserData, onSave }) => {
@@ -21,6 +21,7 @@ export const EditPersonalDetailsSheet = ({ initialUserData, onSave }) => {
 	});
 	const [imageFile, setImageFile] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isSaving, setIsSaving] = useState(false);
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
@@ -56,9 +57,16 @@ export const EditPersonalDetailsSheet = ({ initialUserData, onSave }) => {
 		}
 	};
 
-	const handleSave = () => {
+	const handleSave = async () => {
 		if (onSave) {
-			onSave(userData);
+			setIsSaving(true);
+			try {
+				await onSave(userData);
+			} catch (error) {
+				console.error("Failed to save profile:", error);
+			} finally {
+				setIsSaving(false);
+			}
 		}
 	};
 
@@ -84,13 +92,25 @@ export const EditPersonalDetailsSheet = ({ initialUserData, onSave }) => {
 							className="flex-[0.6] rounded-full object-cover w-32 h-32"
 						/>
 						<div className="flex gap-2.5 flex-col items-center justify-center">
-							<Input type="file" onChange={handleFileChange} accept="image/*" />
+							<Input
+								type="file"
+								onChange={handleFileChange}
+								accept="image/*"
+								disabled={isLoading}
+							/>
 							<Button
 								className="w-full"
 								onClick={handleUpload}
 								disabled={!imageFile || isLoading}
 							>
-								{isLoading ? "Uploading..." : "Upload"}
+								{isLoading ? (
+									<>
+										<Loader2 size={16} className="mr-1 animate-spin" />
+										Uploading...
+									</>
+								) : (
+									"Upload"
+								)}
 							</Button>
 						</div>
 					</div>
@@ -100,15 +120,25 @@ export const EditPersonalDetailsSheet = ({ initialUserData, onSave }) => {
 							name="name"
 							value={userData.name}
 							onChange={handleInputChange}
+							disabled={isSaving}
 						/>
 					</Label>
 				</div>
 				<DialogFooter>
-					<Button type="submit" onClick={handleSave}>
-						Save
+					<Button type="submit" onClick={handleSave} disabled={isSaving}>
+						{isSaving ? (
+							<>
+								<Loader2 size={16} className="mr-1 animate-spin" />
+								Saving...
+							</>
+						) : (
+							"Save"
+						)}
 					</Button>
 					<DialogClose>
-						<Button variant="outline">Close</Button>
+						<Button variant="outline" disabled={isSaving}>
+							Close
+						</Button>
 					</DialogClose>
 				</DialogFooter>
 			</DialogContent>

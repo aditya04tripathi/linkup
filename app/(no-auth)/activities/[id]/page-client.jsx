@@ -16,11 +16,9 @@ const ActivityDetailClient = ({ id }) => {
 	const { fetchActivity, loading, hasUserJoined } = useActivity();
 
 	useEffect(() => {
-		console.log(id);
 		if (id) {
 			fetchActivity(id)
 				.then((data) => {
-					console.log(data, "fetch activity with id");
 					setActivity(data);
 				})
 				.catch((error) => {

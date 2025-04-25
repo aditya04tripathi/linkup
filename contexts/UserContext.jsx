@@ -26,10 +26,8 @@ export const UserProvider = ({ children }) => {
 			setLoading(false);
 
 			if (data.ok) {
-				console.log("Fetch user OK");
 				return data.message;
 			} else {
-				console.log("Fetch user NOTOK", error);
 				throw new Error(data.message);
 			}
 		} catch (error) {

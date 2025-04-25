@@ -23,7 +23,6 @@ export const GET = async (req) => {
 			}
 		);
 	} catch (error) {
-		console.log("Error in getUsers:", error);
 		return Response.json(
 			{ ok: false, message: error.message },
 			{

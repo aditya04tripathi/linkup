@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { BadgeCheck, User, Globe, Calendar, MessageCircle } from "lucide-react";
+import {
+	BadgeCheck,
+	User,
+	Globe,
+	Calendar,
+	MessageCircle,
+	Loader2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useNotification } from "@/contexts/NotificationContext";
@@ -23,11 +30,19 @@ const getNotificationIcon = (type) => {
 export default function NotificationItem({ notification }) {
 	const { markAsRead } = useNotification();
 	const [isHovered, setIsHovered] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const { _id, message, type, read, createdAt } = notification;
 
-	const handleMarkAsRead = () => {
+	const handleMarkAsRead = async () => {
 		if (!read) {
-			markAsRead(_id);
+			setIsLoading(true);
+			try {
+				await markAsRead(_id);
+			} catch (error) {
+				console.error("Error marking notification as read:", error);
+			} finally {
+				setIsLoading(false);
+			}
 		}
 	};
 
@@ -60,10 +75,15 @@ export default function NotificationItem({ notification }) {
 					variant="ghost"
 					size="sm"
 					onClick={handleMarkAsRead}
+					disabled={isLoading}
 					className="opacity-70 hover:opacity-100"
 				>
-					<BadgeCheck className="size-4 mr-1" />
-					Mark read
+					{isLoading ? (
+						<Loader2 className="size-4 mr-1 animate-spin" />
+					) : (
+						<BadgeCheck className="size-4 mr-1" />
+					)}
+					{isLoading ? "Processing..." : "Mark read"}
 				</Button>
 			)}
 

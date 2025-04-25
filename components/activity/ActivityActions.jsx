@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/contexts";
 import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 export const ActivityActions = ({ activity, isPastEvent, hasJoined }) => {
 	const [joinStatus, setJoinStatus] = useState(hasJoined);
@@ -11,7 +12,6 @@ export const ActivityActions = ({ activity, isPastEvent, hasJoined }) => {
 	const { joinActivity, leaveActivity } = useActivity();
 
 	useEffect(() => {
-		console.log("hasJoined", hasJoined);
 		setJoinStatus(hasJoined);
 	}, [hasJoined]);
 
@@ -56,7 +56,14 @@ export const ActivityActions = ({ activity, isPastEvent, hasJoined }) => {
 			disabled={isLeaving}
 			className="w-full sm:w-auto px-8"
 		>
-			{isLeaving ? "Leaving..." : "Leave Activity"}
+			{isLeaving ? (
+				<>
+					<Loader2 size={16} className="mr-2 animate-spin" />
+					Leaving...
+				</>
+			) : (
+				"Leave Activity"
+			)}
 		</Button>
 	) : (
 		<Button
@@ -66,7 +73,14 @@ export const ActivityActions = ({ activity, isPastEvent, hasJoined }) => {
 			}
 			className="w-full sm:w-auto px-8"
 		>
-			{isJoining ? "Joining..." : "Join Activity"}
+			{isJoining ? (
+				<>
+					<Loader2 size={16} className="mr-2 animate-spin" />
+					Joining...
+				</>
+			) : (
+				"Join Activity"
+			)}
 		</Button>
 	);
 };

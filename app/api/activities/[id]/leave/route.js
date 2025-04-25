@@ -11,8 +11,6 @@ export const POST = async (req, { params }) => {
 	const headersList = await headers();
 	const token = headersList.get("Authorization")?.split(" ")[1];
 
-	console.log(token);
-
 	if (!token) {
 		return Response.json(
 			{ ok: false, message: "No token provided" },

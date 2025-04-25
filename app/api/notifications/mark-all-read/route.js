@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import * as jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import Notification from "@/models/Notification";
+import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
 
 export const PATCH = async (req) => {
 	const headersList = headers();
@@ -28,6 +29,17 @@ export const PATCH = async (req) => {
 			{ userId: id, read: false },
 			{ read: true }
 		);
+
+		// Increment score based on number of notifications read, but cap it at a reasonable amount
+		const scoreIncrement =
+			Math.min(result.modifiedCount, 10) * SCORE_VALUES.READ_NOTIFICATION;
+		if (result.modifiedCount > 0) {
+			await incrementUserScore(
+				id,
+				scoreIncrement,
+				"mark all notifications read"
+			);
+		}
 
 		return Response.json(
 			{

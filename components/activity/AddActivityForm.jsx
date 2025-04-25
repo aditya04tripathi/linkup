@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,11 +17,13 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
 
 export const AddActivityForm = () => {
 	const router = useRouter();
 	const { token } = useAuth();
-	const [formData, setFormData] = React.useState({
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [formData, setFormData] = useState({
 		title: "Gaming night",
 		description: "With the boys",
 		type: "social",
@@ -42,8 +44,6 @@ export const AddActivityForm = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		console.log("1");
-
 		if (
 			!formData.title ||
 			!formData.description ||
@@ -53,24 +53,33 @@ export const AddActivityForm = () => {
 			!formData.duration ||
 			!formData.maxParticipants
 		) {
-			console.log("2", formData);
 			return toast.error("Please fill in all required fields.");
 		}
-		console.log("3");
 
-		const { data } = await axios.post("/api/activities", formData, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-		console.log("4");
-		if (!data.ok) {
-			toast.error(data.message);
-			return;
+		setIsSubmitting(true);
+		try {
+			const { data } = await axios.post("/api/activities", formData, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (!data.ok) {
+				toast.error(data.message);
+				return;
+			}
+
+			toast.success("Activity created successfully!");
+			router.push("/activities");
+		} catch (error) {
+			toast.error(
+				"Failed to create activity: " +
+					(error.response?.data?.message || error.message)
+			);
+			console.error("Error creating activity:", error);
+		} finally {
+			setIsSubmitting(false);
 		}
-		console.log("5");
-		toast.success("Activity created successfully!");
-		router.push("/activities");
 	};
 
 	return (
@@ -200,6 +209,7 @@ export const AddActivityForm = () => {
 					type="button"
 					variant="outline"
 					onClick={() => router.push("/activities")}
+					disabled={isSubmitting}
 				>
 					Cancel
 				</Button>
@@ -207,8 +217,16 @@ export const AddActivityForm = () => {
 					onClick={handleSubmit}
 					type="submit"
 					className="bg-primary hover:bg-primary-dark"
+					disabled={isSubmitting}
 				>
-					Create Activity
+					{isSubmitting ? (
+						<>
+							<Loader2 size={16} className="mr-2 animate-spin" />
+							Creating...
+						</>
+					) : (
+						"Create Activity"
+					)}
 				</Button>
 			</div>
 		</form>

@@ -12,6 +12,7 @@ import {
 	Bell,
 	Settings,
 	LogOut,
+	Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,10 +24,12 @@ import {
 	SidebarMenuItem,
 	SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { useState } from "react";
 
 export const AppSidebar = () => {
 	const { user, logout } = useAuth();
 	const pathname = usePathname();
+	const [loggingOut, setLoggingOut] = useState(false);
 
 	const navItems = [
 		{ href: "/", icon: Home, label: "Home" },
@@ -38,6 +41,17 @@ export const AppSidebar = () => {
 	];
 
 	const isActive = (path) => pathname === path;
+
+	const handleLogout = async () => {
+		setLoggingOut(true);
+		try {
+			await logout();
+		} catch (error) {
+			console.error("Error logging out:", error);
+		} finally {
+			setLoggingOut(false);
+		}
+	};
 
 	return (
 		<Sidebar>
@@ -79,10 +93,15 @@ export const AppSidebar = () => {
 						<Button
 							variant="outline"
 							className="w-full justify-start"
-							onClick={() => logout()}
+							onClick={handleLogout}
+							disabled={loggingOut}
 						>
-							<LogOut className="mr-2" size={16} />
-							Sign out
+							{loggingOut ? (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							) : (
+								<LogOut className="mr-2" size={16} />
+							)}
+							{loggingOut ? "Signing out..." : "Sign out"}
 						</Button>
 					</div>
 				) : (

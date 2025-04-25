@@ -3,6 +3,7 @@ import Activity from "@/models/Activity";
 import { headers } from "next/headers";
 import * as jwt from "jsonwebtoken";
 import { createNotification } from "@/lib/notifications";
+import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
 
 export const GET = async (req) => {
 	const searchParams = req.nextUrl.searchParams;
@@ -102,6 +103,13 @@ export const POST = async (req) => {
 			"activity",
 			`You've created a new activity: ${title}`,
 			{ relatedId: newActivity._id, relatedModel: "Activity" }
+		);
+
+		// Increment user score for creating an activity
+		await incrementUserScore(
+			decoded.id,
+			SCORE_VALUES.CREATE_ACTIVITY,
+			"create activity"
 		);
 
 		return Response.json(

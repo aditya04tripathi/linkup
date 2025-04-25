@@ -3,6 +3,7 @@ import User from "@/models/User";
 import { headers } from "next/headers";
 import * as jwt from "jsonwebtoken";
 import { createNotification } from "@/lib/notifications";
+import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
 
 export const POST = async (req, { params }) => {
 	const { id } = await params;
@@ -64,6 +65,13 @@ export const POST = async (req, { params }) => {
 			"friend",
 			`${updatedUser.name || updatedUser.email} started following you!`,
 			{ relatedId: followFrom, relatedModel: "User" }
+		);
+
+		// Increment score for following a user
+		await incrementUserScore(
+			followFrom,
+			SCORE_VALUES.FOLLOW_USER,
+			"follow user"
 		);
 
 		return Response.json(
