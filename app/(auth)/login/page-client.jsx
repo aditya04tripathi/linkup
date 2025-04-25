@@ -14,6 +14,7 @@ export const LoginClient = () => {
 		email: "",
 		password: "",
 	});
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
 	const handleChange = (e) => {
@@ -30,7 +31,14 @@ export const LoginClient = () => {
 
 		if (!email || !password) return toast.error("Please fill in all fields");
 
-		await signIn(email, password);
+		setIsLoading(true);
+		try {
+			await signIn(email, password);
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -52,6 +60,7 @@ export const LoginClient = () => {
 						type="email"
 						id="email"
 						name="email"
+						disabled={isLoading}
 					/>
 				</Label>
 				<Label className="flex items-start flex-col gap-2" htmlFor="password">
@@ -63,17 +72,23 @@ export const LoginClient = () => {
 						type="password"
 						id="password"
 						name="password"
+						disabled={isLoading}
 					/>
 				</Label>
 				<div className="w-full flex flex-col md:flex-row justify-between items-center gap-5">
-					<Button type="submit" className={"w-full flex-1"}>
-						Sign In
+					<Button
+						type="submit"
+						className={"w-full flex-1"}
+						disabled={isLoading}
+					>
+						{isLoading ? "Signing In..." : "Sign In"}
 					</Button>
 					<Button
 						type="button"
 						className={"flex-1"}
 						variant={"ghost"}
 						onClick={() => router.push("/register")}
+						disabled={isLoading}
 					>
 						Sign Up
 					</Button>
