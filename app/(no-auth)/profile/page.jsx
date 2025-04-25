@@ -1,18 +1,48 @@
+"use client";
+
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { academicInterests, hobbiesList } from "@/lib/utils";
 import EditPersonalityProfile from "@/components/EditPersonalityTraits";
 import EditPersonalDetailsSheet from "@/components/EditProfileDetails";
 import ProfileSlider from "@/components/ProfileSlider";
 import { Button } from "@/components/ui/button";
 import { Bell } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Profile() {
+	const { token, user } = useAuth();
+
+	const fetchUser = async () => {
+		const { data } = await axios.get("/api/auth/me", {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		if (data.ok) {
+		} else {
+			console.error("Failed to fetch user data");
+		}
+	};
+	useEffect(() => {
+		fetchUser();
+	}, []);
+
+	if (!user) {
+		return (
+			<div className="flex items-center justify-center h-screen">
+				<p>Loading...</p>
+			</div>
+		);
+	}
+
 	return (
 		<div>
 			<div className="w-full flex justify-between items-center">
-				<h1>Welcome, John Doe!</h1>
+				<h1>Welcome, {user.name}!</h1>
 				<Link href="/notifications">
 					<Button>
 						<Bell />
@@ -29,12 +59,12 @@ export default function Profile() {
 					className="rounded-full w-32 h-32 object-cover"
 				/>
 				<div className="flex flex-col items-center justify-center">
-					<h1>John Doe</h1>
-					<p className="text-sm text-muted-foreground">john@doe.com</p>
+					<h1>{user.name}</h1>
+					<p className="text-sm text-muted-foreground">{user.email}</p>
 				</div>
 
 				<div className="border h-8 flex items-center justify-center px-5 rounded-lg">
-					✨ 25 engagement points ✨
+					✨ {user.score} engagement points ✨
 				</div>
 			</div>
 
@@ -46,21 +76,25 @@ export default function Profile() {
 
 				<ProfileSlider
 					title="Extroversion Level"
-					value={57}
+					value={user.extroversionLevel}
+					min={0}
+					max={10}
 					leftLabel="Introvert"
 					rightLabel="Extrovert"
 				/>
 
 				<ProfileSlider
 					title="Energy Level"
-					value={87}
+					value={user.energyLevel}
+					min={0}
+					max={10}
 					leftLabel="Low Energy"
 					rightLabel="High Energy"
 				/>
 
 				<ProfileSlider
-					title="Preferred Group Size (3-5)"
-					value={[3, 5]}
+					title={`Preferred Group Size (${user.preferredGroupSize[0]}-${user.preferredGroupSize[1]})`}
+					value={user.preferredGroupSize}
 					min={0}
 					max={10}
 					leftLabel="0"
@@ -71,30 +105,29 @@ export default function Profile() {
 				<div className="flex w-full items-stretch flex-col gap-2">
 					<h3>Academic Interests</h3>
 					<div className="flex-wrap flex gap-2">
-						{academicInterests.map((interest, idx) => (
-							<Badge key={idx}>{interest}</Badge>
-						))}
+						{user.academicInterests.length === 0
+							? "Such empty"
+							: user.academicInterests.map((interest, idx) => (
+									<Badge key={idx}>{interest}</Badge>
+							  ))}
 					</div>
 				</div>
 
 				<div className="flex w-full items-stretch flex-col gap-2">
 					<h3>Hobbies</h3>
 					<div className="flex-wrap flex gap-2">
-						{hobbiesList.map((interest, idx) => (
-							<Badge key={idx}>{interest}</Badge>
-						))}
+						{user.interests.length === 0
+							? "Such empty"
+							: user.interests.map((interest, idx) => (
+									<Badge key={idx}>{interest}</Badge>
+							  ))}
 					</div>
 				</div>
 
 				<div className="flex w-full items-stretch flex-col gap-2">
 					<h3>Accomodations</h3>
 					<p>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit.
-						Exercitationem minima iure autem itaque sit rerum odio doloremque
-						similique unde pariatur aliquid minus adipisci nulla saepe explicabo
-						porro excepturi earum fuga officia illo, vitae et consectetur
-						perspiciatis quaerat. Vel labore fugit quae beatae temporibus quis
-						expedita veniam quos, placeat natus excepturi.
+						{user.accommodation.length > 0 ? user.accommodation : "Such empty"}
 					</p>
 				</div>
 			</div>

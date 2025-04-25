@@ -3,10 +3,8 @@ import { Medal, Trophy, User, Star } from "lucide-react";
 import Link from "next/link";
 
 const Leaderboard = ({ className, users, title = "Top Users" }) => {
-	// Sort users by score in descending order
 	const sortedUsers = [...users].sort((a, b) => b.score - a.score);
 
-	// Apply rankings
 	const rankedUsers = sortedUsers.map((user, index) => ({
 		...user,
 		rank: index + 1,
@@ -15,11 +13,11 @@ const Leaderboard = ({ className, users, title = "Top Users" }) => {
 	const getRankIcon = (rank) => {
 		switch (rank) {
 			case 1:
-				return <Trophy className="h-5 w-5 text-yellow-500" />;
+				return <Trophy className="w-5 h-5 text-yellow-500" />;
 			case 2:
-				return <Medal className="h-5 w-5 text-gray-400" />;
+				return <Medal className="w-5 h-5 text-gray-400" />;
 			case 3:
-				return <Medal className="h-5 w-5 text-amber-600" />;
+				return <Medal className="w-5 h-5 text-amber-600" />;
 			default:
 				return <span className="text-sm font-medium">{rank}</span>;
 		}
@@ -27,9 +25,9 @@ const Leaderboard = ({ className, users, title = "Top Users" }) => {
 
 	return (
 		<div className={cn("w-full border rounded-lg overflow-hidden", className)}>
-			<div className="bg-muted/50 p-4 border-b">
-				<h2 className="font-medium text-lg flex items-center gap-2">
-					<Trophy className="h-5 w-5 text-primary" />
+			<div className="p-4 border-b bg-muted/50">
+				<h2 className="flex items-center gap-2 text-lg font-medium">
+					<Trophy className="w-5 h-5 text-primary" />
 					{title}
 				</h2>
 			</div>
@@ -38,13 +36,13 @@ const Leaderboard = ({ className, users, title = "Top Users" }) => {
 				<table className="w-full">
 					<thead className="bg-muted/30">
 						<tr>
-							<th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm w-16">
+							<th className="w-16 px-4 py-3 text-sm font-medium text-left text-muted-foreground">
 								Rank
 							</th>
-							<th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+							<th className="px-4 py-3 text-sm font-medium text-left text-muted-foreground">
 								User
 							</th>
-							<th className="px-4 py-3 text-left font-medium text-muted-foreground text-sm">
+							<th className="px-4 py-3 text-sm font-medium text-left text-muted-foreground">
 								Score
 							</th>
 						</tr>
@@ -65,18 +63,18 @@ const Leaderboard = ({ className, users, title = "Top Users" }) => {
 								</td>
 								<td className="px-4 py-3">
 									<Link
-										href={`/user/${user.id}`}
+										href={`/user/${user._id}`}
 										className="flex items-center gap-3 hover:underline"
 									>
-										<div className="size-8 rounded-full bg-muted overflow-hidden">
+										<div className="overflow-hidden rounded-full size-8 bg-muted">
 											{user.avatar ? (
 												<img
 													src={user.avatar}
 													alt={user.name}
-													className="w-full h-full object-cover"
+													className="object-cover w-full h-full"
 												/>
 											) : (
-												<div className="w-full h-full flex items-center justify-center bg-primary/10">
+												<div className="flex items-center justify-center w-full h-full bg-primary/10">
 													<User size={16} />
 												</div>
 											)}
@@ -86,7 +84,7 @@ const Leaderboard = ({ className, users, title = "Top Users" }) => {
 								</td>
 								<td className="px-4 py-3">
 									<span className="font-medium">{user.score}</span>
-									<span className="text-xs text-muted-foreground ml-1">
+									<span className="ml-1 text-xs text-muted-foreground">
 										pts
 									</span>
 								</td>

@@ -1,133 +1,154 @@
 "use client";
 
-import { useIsMobile } from "@/hooks/use-mobile";
-import React from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Home, Calendar, Plus, User, UserPlus } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
-import { Users } from "lucide-react";
 import Link from "next/link";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+	SheetClose,
+} from "@/components/ui/sheet";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-function ButtonGroup({ isMobile = false }) {
+export default function Navbar() {
+	const { user, logout } = useAuth();
+	const { theme, toggleTheme } = useTheme();
+	const [sheetOpen, setSheetOpen] = useState(false);
 	const router = useRouter();
-	const activeRoute = usePathname();
 
-	const isActive = (route) => {
-		console.log(route, activeRoute, "route", `activeRoute`);
-		return activeRoute === route;
-	};
-
-	const buttonClass = (route) =>
-		cn(
-			"text-sm flex gap-2 items-center",
-			isMobile ? "flex-col" : "flex-row",
-			isActive(route)
-				? "bg-card text-card-foreground"
-				: "bg-background text-foreground"
-		);
+	const navItems = [
+		{ name: "Home", href: "/" },
+		{ name: "Friends", href: "/friends" },
+		{ name: "Activities", href: "/activities" },
+		{ name: "Notifications", href: "/notifications" },
+	];
 
 	return (
-		<>
-			<Button
-				onClick={() => router.push("/")}
-				variant="ghost"
-				className={buttonClass("/")}
-			>
-				<Home />
-				Home
-			</Button>
-			<Button
-				onClick={() => router.push("/activities")}
-				variant="ghost"
-				className={buttonClass("/activities")}
-			>
-				<Calendar />
-				Activities
-			</Button>
-			{isMobile && (
-				<Button
-					onClick={() => router.push("/activities/add")}
-					className="bg-muted-foreground text-muted p-2 rounded-full"
-				>
-					<Plus size={32} />
-				</Button>
-			)}
-			<Button
-				onClick={() => router.push("/profile")}
-				variant="ghost"
-				className={buttonClass("/profile")}
-			>
-				<User />
-				Profile
-			</Button>
-			<Button
-				onClick={() => router.push("/friends")}
-				variant="ghost"
-				className={buttonClass("/friends")}
-			>
-				<Users />
-				Friends
-			</Button>
-		</>
+		<nav className="border-b">
+			<div className="flex h-16 items-center px-4 container mx-auto">
+				{/* Mobile menu trigger */}
+				<Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+					<SheetTrigger asChild className="md:hidden">
+						<Button variant="ghost" size="icon" className="mr-2">
+							<Menu className="h-5 w-5" />
+							<span className="sr-only">Toggle menu</span>
+						</Button>
+					</SheetTrigger>
+					<SheetContent side="left" className="w-[240px] sm:w-[300px]">
+						<SheetHeader>
+							<SheetTitle>MACathon</SheetTitle>
+						</SheetHeader>
+						<div className="flex flex-col gap-4 py-4">
+							{navItems.map((item) => (
+								<SheetClose asChild key={item.name}>
+									<Link
+										href={item.href}
+										className="px-2 py-1 text-lg hover:underline"
+										onClick={() => setSheetOpen(false)}
+									>
+										{item.name}
+									</Link>
+								</SheetClose>
+							))}
+						</div>
+					</SheetContent>
+				</Sheet>
+
+				{/* Logo */}
+				<Link href="/" className="font-bold text-xl md:mr-6">
+					MACathon
+				</Link>
+
+				{/* Desktop navigation */}
+				<div className="hidden md:flex items-center space-x-6 mx-auto">
+					{navItems.map((item) => (
+						<Link
+							key={item.name}
+							href={item.href}
+							className="text-sm font-medium hover:text-primary"
+						>
+							{item.name}
+						</Link>
+					))}
+				</div>
+
+				{/* Right side controls */}
+				<div className="ml-auto flex items-center space-x-4">
+					<Button
+						variant={"outline"}
+						className={"size-10 rounded-full"}
+						onClick={toggleTheme}
+					>
+						{theme === "dark" ? <Moon /> : <Sun />}
+					</Button>
+
+					{user ? (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									className="relative h-10 w-10 rounded-full"
+								>
+									<Avatar className="h-10 w-10">
+										<AvatarImage
+											src={user.avatar || "/avatars/01.png"}
+											alt={user.name}
+										/>
+										<AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+									</Avatar>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className="w-56" align="end" forceMount>
+								<DropdownMenuLabel className="font-normal">
+									<div className="flex flex-col space-y-1">
+										<p className="text-sm font-medium leading-none">
+											{user.name}
+										</p>
+										<p className="text-xs leading-none text-muted-foreground">
+											{user.email}
+										</p>
+									</div>
+								</DropdownMenuLabel>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem
+									onClick={() => {
+										router.push("/profile");
+									}}
+								>
+									<span className="">Profile</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={logout}>
+									<span className="text-destructive">Log out</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : (
+						<div className="flex gap-2">
+							<Button asChild variant="ghost" className="hidden sm:flex">
+								<Link href="/login">Login</Link>
+							</Button>
+							<Button asChild>
+								<Link href="/signup">Sign Up</Link>
+							</Button>
+						</div>
+					)}
+				</div>
+			</div>
+		</nav>
 	);
 }
-
-const Navbar = ({ children }) => {
-	const isMobile = useIsMobile();
-	const router = useRouter();
-
-	if (isMobile) {
-		return (
-			<div className="w-full h-screen relative">
-				<ScrollArea className="fixed top-0 right-0 left-0 bottom-10 h-[calc(100vh-5rem)]">
-					<div className="h-auto mx-auto w-full max-w-3xl p-5">{children}</div>
-				</ScrollArea>
-				<div className="bg-background fixed bottom-0 left-0 right-0 h-20 border-t-2 z-10 flex flex-row justify-around items-center w-full">
-					<ButtonGroup isMobile={isMobile} />
-				</div>
-			</div>
-		);
-	} else {
-		return (
-			<div className="w-full h-screen relative">
-				<div className="bg-background fixed top-0 left-0 right-0 h-20 border-b-2 z-10 flex flex-row justify-between px-10 items-center w-full">
-					<Link href="/">
-						<h1>LinkUp</h1>
-					</Link>
-
-					<div className="flex flex-1 justify-center items-center gap-2">
-						<ButtonGroup isMobile={isMobile} />
-					</div>
-
-					<div className="flex items-center gap-2">
-						<Button
-							onClick={() => router.push("/activities/add")}
-							variant={"secondary"}
-						>
-							<Plus />
-							Create
-						</Button>
-						<Link href="/profile">
-							<Avatar>
-								<AvatarFallback>JD</AvatarFallback>
-								<AvatarImage
-									src="https://picsum.photos/100"
-									alt="User"
-									className="rounded-full w-full h-full"
-								/>
-							</Avatar>
-						</Link>
-					</div>
-				</div>
-				<ScrollArea className="absolute top-20 right-0 left-0 bottom-0 h-[calc(100vh-5rem)]">
-					<div className="w-full h-full max-w-4xl mx-auto p-5">{children}</div>
-				</ScrollArea>
-			</div>
-		);
-	}
-};
-
-export default Navbar;

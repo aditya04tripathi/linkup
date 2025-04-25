@@ -1,43 +1,51 @@
+"use client";
+
 import { ACTIVITIES, cn, formatDate } from "@/lib/utils";
 import ActivityDetail from "@/components/ActivityDetail";
 import ActivityActions from "@/components/ActivityActions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
-async function getActivity(id) {
-	return ACTIVITIES.find((activity) => activity.id === id) || null;
-}
+const ActivityPage = () => {
+	const { id } = useParams();
+	const [activity, setActivity] = useState(null);
+	const router = useRouter();
+	const { user } = useAuth();
 
-async function getCurrentUser() {
-	return {
-		id: "currentUser123",
-		name: "Current User",
+	const fetchActivity = async (id) => {
+		const { data } = await axios.get(`/api/activities/${id}`);
+		if (data.ok) {
+			setActivity(data.message);
+		} else {
+			throw new Error("Failed to fetch activity");
+		}
 	};
-}
+	useEffect(() => {
+		fetchActivity(id);
+		console.log(activity);
+	}, []);
 
-const ActivityPage = async ({ params }) => {
-	const { id } = await params;
-	const activity = await getActivity(id);
-	const currentUser = await getCurrentUser();
-
-	const isPastEvent = new Date(activity.dateTime) < new Date();
-	const hasJoined = activity.participants.includes(currentUser.id);
-
-	return (
+	return !activity ? null : (
 		<div className={"w-full"}>
 			<div className={cn("rounded-lg overflow-hidden")}>
 				<div className="p-6">
 					<ActivityDetail activity={activity} formatDate={formatDate} />
-					<div className="flex flex-col sm:flex-row justify-end gap-4 pt-4">
-						<Button variant="outline" asChild>
-							<Link href="/activities">Back to Activities</Link>
+					<div className="flex flex-col sm:flex-row justify-end gap-4">
+						<Button onClick={() => router.back()} variant="outline">
+							Back to Activities
 						</Button>
-
 						<ActivityActions
 							activity={activity}
-							currentUser={currentUser}
-							isPastEvent={isPastEvent}
-							hasJoined={hasJoined}
+							user={user}
+							isPastEvent={
+								new Date(activity.dateTime ?? Date.now()) < new Date()
+							}
+							hasJoined={activity.participants.includes(user._id)}
 						/>
 					</div>
 				</div>

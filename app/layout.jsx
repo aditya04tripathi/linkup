@@ -1,32 +1,21 @@
-import { Montserrat } from "next/font/google";
+"use client";
+
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 
-const montserrat = Montserrat({
-	variable: "--font-montserrat",
-	subsets: ["latin"],
-});
-
-export const metadata = {
-	title: "Linkup | MACathon 2025",
-	description: "Turning Digital Connection into Real-World Belonging",
-};
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
 	return (
-		<html
-			suppressContentEditableWarning={true}
-			suppressHydrationWarning={true}
-			lang="en"
-		>
-			<body
-				className={`${montserrat.variable} dark antialiased bg-background text-foreground`}
-			>
-				<TooltipProvider>
-					{children}
-					<Toaster />
-				</TooltipProvider>
+		<html lang="en">
+			<body className={inter.className}>
+				<AuthProvider>
+					<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+						{children}
+					</ThemeProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);

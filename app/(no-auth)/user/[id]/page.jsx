@@ -1,5 +1,8 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { cn, MOCK_USERS } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import axios from "axios";
 import {
 	ArrowLeft,
 	MessageCircle,
@@ -11,26 +14,39 @@ import {
 	Heart,
 } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useEffect } from "react";
 
-async function getUser(id) {
-	return MOCK_USERS.find((user) => user.id === id) || null;
-}
+const UserProfilePage = () => {
+	const { id } = useParams();
+	const [user, setUser] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-async function getCurrentUser() {
-	return {
-		id: "currentUser123",
-		name: "Current User",
+	const match = 0.5;
+
+	const fetchUser = async () => {
+		const { data } = await axios.get(`/api/users/${id}`);
+
+		if (data.ok) {
+			setUser(data.message);
+			setLoading(false);
+			return;
+		} else {
+			setUser(null);
+			setError(data.message);
+			return;
+		}
 	};
-}
+	useEffect(() => {
+		fetchUser();
+	}, [id]);
 
-const UserProfilePage = async ({ params }) => {
-	const { id } = await params;
-	const user = await getUser(id);
-
-	if (!user) {
+	if (error) {
 		return (
 			<div className="flex flex-col items-center justify-center h-96">
-				<h1 className="text-2xl font-bold mb-4">User Not Found</h1>
+				<h1 className="mb-4 text-2xl font-bold">User Not Found</h1>
 				<Button asChild>
 					<Link href="/friends">Back to Friends</Link>
 				</Button>
@@ -38,9 +54,9 @@ const UserProfilePage = async ({ params }) => {
 		);
 	}
 
-	const match = user.match || user.compatibility / 100;
-
-	return (
+	return loading ? (
+		<div>loding...</div>
+	) : (
 		<div className="w-full">
 			<div className="mb-6">
 				<Button variant="ghost" className="pl-0" asChild>
@@ -53,38 +69,38 @@ const UserProfilePage = async ({ params }) => {
 
 			<div className="flex flex-col gap-6">
 				{/* Profile Header */}
-				<div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-					<div className="size-24 md:size-32 rounded-full bg-muted overflow-hidden">
+				<div className="flex flex-col items-start gap-6 md:flex-row md:items-center">
+					<div className="overflow-hidden rounded-full size-24 md:size-32 bg-muted">
 						{user.avatar ? (
 							<img
 								src={user.avatar}
 								alt={user.name}
-								className="w-full h-full object-cover"
+								className="object-cover w-full h-full"
 							/>
 						) : (
-							<div className="w-full h-full flex items-center justify-center bg-primary/10">
+							<div className="flex items-center justify-center w-full h-full bg-primary/10">
 								<User size={40} />
 							</div>
 						)}
 					</div>
 
 					<div className="flex-1">
-						<div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+						<div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
 							<h1 className="text-2xl font-bold">{user.name}</h1>
 							<div
 								className={cn(
 									"text-sm px-3 py-1 rounded-full",
-									match * 100 < 50
+									(match || 1) * 100 < 50
 										? "bg-red-100 text-red-700"
-										: match * 100 < 75
+										: (match || 1) * 100 < 75
 										? "bg-yellow-100 text-yellow-700"
 										: "bg-green-100 text-green-700"
 								)}
 							>
-								{Math.round(match * 100)}% Match
+								{Math.round((match || 1) * 100)}% Match
 							</div>
 						</div>
-						<p className="text-muted-foreground mt-2">{user.bio}</p>
+						<p className="mt-2 text-muted-foreground">{user.bio}</p>
 					</div>
 
 					<div className="flex gap-2 mt-4 md:mt-0">
@@ -102,11 +118,11 @@ const UserProfilePage = async ({ params }) => {
 				</div>
 
 				{/* Profile Details */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 					{/* About */}
 					<div className="col-span-2">
-						<div className="border rounded-lg p-6">
-							<h2 className="text-xl font-semibold mb-4">About</h2>
+						<div className="p-6 border rounded-lg">
+							<h2 className="mb-4 text-xl font-semibold">About</h2>
 							<div className="space-y-4">
 								{user.location && (
 									<div className="flex items-center gap-2">
@@ -131,8 +147,8 @@ const UserProfilePage = async ({ params }) => {
 							</div>
 
 							<div className="mt-6">
-								<h3 className="font-medium mb-3">Bio</h3>
-								<p className="text-muted-foreground whitespace-pre-line">
+								<h3 className="mb-3 font-medium">Bio</h3>
+								<p className="whitespace-pre-line text-muted-foreground">
 									{user.bio || "No bio provided."}
 								</p>
 							</div>
@@ -141,8 +157,8 @@ const UserProfilePage = async ({ params }) => {
 
 					{/* Interests */}
 					<div className="col-span-1">
-						<div className="border rounded-lg p-6">
-							<h2 className="text-xl font-semibold mb-4">Interests</h2>
+						<div className="p-6 border rounded-lg">
+							<h2 className="mb-4 text-xl font-semibold">Interests</h2>
 							{user.interests && user.interests.length > 0 ? (
 								<div className="flex flex-wrap gap-2">
 									{user.interests.map((interest, idx) => (

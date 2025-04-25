@@ -32,7 +32,7 @@ const EditPersonalityProfile = () => {
 					<div className="flex flex-col gap-2.5 my-2.5">
 						<div className="flex w-full items-stretch flex-col gap-2">
 							<h3>Extroversion Level</h3>
-							<Slider defaultValue={[57]} />
+							<Slider defaultValue={[5]} min={5} max={5} />
 							<div className="w-full flex flex-1 items-center justify-between text-muted-foreground">
 								<div>Introvert</div>
 								<div>Extrovert</div>
@@ -41,7 +41,7 @@ const EditPersonalityProfile = () => {
 
 						<div className="flex w-full items-stretch flex-col gap-2">
 							<h3>Energy Level</h3>
-							<Slider defaultValue={[87]} />
+							<Slider defaultValue={[5]} min={0} max={10} />
 							<div className="w-full flex flex-1 items-center justify-between text-muted-foreground">
 								<div>Low Energy</div>
 								<div>High Energy</div>

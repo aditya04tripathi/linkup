@@ -2,21 +2,25 @@ import { cn } from "@/lib/utils";
 import { Calendar, Clock, Users } from "lucide-react";
 
 const ActivityDetail = ({ activity, formatDate }) => {
+	if (!activity) {
+		return null;
+	}
+
 	return (
 		<div className="mb-6">
 			<div className="flex flex-col justify-between items-start mb-4">
-				{activity.compatibility && (
+				{(activity?.compatibility || 1) && (
 					<span
 						className={cn(
 							"text-sm text-muted-foreground",
-							activity.compatibility < 50
+							(activity?.compatibility || 1) < 50
 								? "text-red-400"
 								: activity.compatibility < 75
 								? "text-yellow-400"
 								: "text-green-400"
 						)}
 					>
-						{activity.compatibility}% Match
+						{activity?.compatibility || 1}% Match
 					</span>
 				)}
 				<h1 className="text-2xl font-bold text-foreground">{activity.title}</h1>
@@ -57,7 +61,10 @@ const ActivityDetail = ({ activity, formatDate }) => {
 				</h1>
 				<div className="flex gap-2">
 					{Array.from({ length: activity.participants.length }).map((_, i) => (
-						<div className="flex items-center justify-center bg-card size-10 rounded-full">
+						<div
+							key={i}
+							className="flex items-center justify-center bg-card size-10 rounded-full"
+						>
 							{i}
 						</div>
 					))}

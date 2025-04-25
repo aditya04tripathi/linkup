@@ -4,15 +4,16 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const ActivityActions = ({ activity, currentUser, isPastEvent, hasJoined }) => {
+const ActivityActions = ({ activity, isPastEvent, hasJoined }) => {
 	const [isJoining, setIsJoining] = useState(false);
 	const [isLeaving, setIsLeaving] = useState(false);
 	const [joinStatus, setJoinStatus] = useState(hasJoined);
 
+	console.log(activity, "actions");
+
 	const handleJoinActivity = async () => {
 		setIsJoining(true);
 		try {
-			// Mock API call - replace with actual implementation
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 			setJoinStatus(true);
 			toast.success("Successfully joined the activity!");
@@ -26,7 +27,6 @@ const ActivityActions = ({ activity, currentUser, isPastEvent, hasJoined }) => {
 	const handleLeaveActivity = async () => {
 		setIsLeaving(true);
 		try {
-			// Mock API call - replace with actual implementation
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 			setJoinStatus(false);
 			toast.success("Successfully left the activity");

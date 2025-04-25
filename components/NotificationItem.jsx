@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { formatNotificationTime } from "@/lib/formatters";
+import { formatNotificationTime } from "@/lib/utils";
 
 export default function NotificationItem({ notification, onMarkAsRead }) {
 	const getIcon = () => {

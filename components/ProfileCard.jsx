@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { UserPlus } from "lucide-react";
-import { User, Heart, MessageCircle } from "lucide-react";
+import { User, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
 const ProfileCard = ({ profile, isFriend }) => {
-	const match = profile.match || profile.compatibility / 100;
-
 	return (
 		<div
 			className={cn(
@@ -14,32 +12,20 @@ const ProfileCard = ({ profile, isFriend }) => {
 			)}
 		>
 			<div className="flex items-center gap-4">
-				<div className="size-16 rounded-full bg-muted overflow-hidden">
+				<div className="overflow-hidden rounded-full size-16 bg-muted">
 					{profile.avatar ? (
 						<img
 							src={profile.avatar}
 							alt={profile.name}
-							className="w-full h-full object-cover"
+							className="object-cover w-full h-full"
 						/>
 					) : (
-						<div className="w-full h-full flex items-center justify-center bg-primary/10">
+						<div className="flex items-center justify-center w-full h-full bg-primary/10">
 							<User size={24} />
 						</div>
 					)}
 				</div>
 				<div>
-					<div
-						className={cn(
-							"text-sm text-muted-foreground",
-							profile.compatibility < 50
-								? "text-red-400"
-								: profile.compatibility < 75
-								? "text-yellow-400"
-								: "text-green-400"
-						)}
-					>
-						{Math.round(match * 100)}% match
-					</div>
 					<h3 className="font-medium">{profile.name}</h3>
 				</div>
 			</div>
@@ -51,7 +37,7 @@ const ProfileCard = ({ profile, isFriend }) => {
 					{profile.interests.map((interest, index) => (
 						<span
 							key={index}
-							className="text-xs bg-muted px-2 py-1 rounded-full"
+							className="px-2 py-1 text-xs rounded-full bg-muted"
 						>
 							{interest}
 						</span>
@@ -60,8 +46,8 @@ const ProfileCard = ({ profile, isFriend }) => {
 			)}
 
 			<div className="flex w-full mt-2">
-				<Button asChild className="w-full flex-1" variant="link">
-					<Link href={`/user/${profile.id || "1"}`}>
+				<Button asChild className="flex-1 w-full" variant="link">
+					<Link href={`/user/${profile._id}`}>
 						<span className="flex items-center gap-1">
 							<User size={16} />
 							View Profile
@@ -69,8 +55,8 @@ const ProfileCard = ({ profile, isFriend }) => {
 					</Link>
 				</Button>
 				{isFriend ? (
-					<Link href={`/message/${profile.id || "1"}`}>
-						<Button className="w-full flex-1">
+					<Link href={`/message/${profile._id}`}>
+						<Button className="flex-1 w-full">
 							<span className="flex items-center gap-1">
 								<MessageCircle size={16} />
 								Message
@@ -78,7 +64,7 @@ const ProfileCard = ({ profile, isFriend }) => {
 						</Button>
 					</Link>
 				) : (
-					<Button className="w-full flex-1">
+					<Button className="flex-1 w-full">
 						<span className="flex items-center gap-1">
 							<UserPlus size={16} />
 							Connect

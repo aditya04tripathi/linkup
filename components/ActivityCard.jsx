@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { cn, formatDate } from "@/lib/utils";
 import { Calendar, Clock, User } from "lucide-react";
@@ -43,10 +45,11 @@ const ActivityCard = ({ activity }) => {
 				</div>
 			</div>
 			<div className="flex w-full">
-				<Button asChild className="flex-1" variant="link">
-					<Link href={`/activities/${activity.id || "1"}`}>View Details</Link>
+				<Button asChild className="flex items-end" variant="link">
+					<Link className="ml-auto" href={`/activities/${activity._id}`}>
+						View Details
+					</Link>
 				</Button>
-				<Button className="flex-1 ml-2">Join Activity</Button>
 			</div>
 		</div>
 	);

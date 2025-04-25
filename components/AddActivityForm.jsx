@@ -14,15 +14,19 @@ import {
 import { DateTimePicker } from "./DateTimePicker";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
+import axios from "axios";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AddActivityForm = () => {
 	const router = useRouter();
+	const { token } = useAuth();
 	const [formData, setFormData] = React.useState({
-		title: "",
-		description: "",
-		activityType: "social",
-		locationType: "",
-		dateTime: "",
+		title: "Gaming night",
+		description: "With the boys",
+		type: "social",
+		location: "LTB 3.89",
+		dateTime: Date.now(),
 		duration: 60,
 		maxParticipants: 5,
 	});
@@ -35,24 +39,38 @@ const AddActivityForm = () => {
 		}));
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		console.log("1");
 
 		if (
 			!formData.title ||
 			!formData.description ||
-			!formData.locationType ||
-			!formData.dateTime
+			!formData.type ||
+			!formData.location ||
+			!formData.dateTime ||
+			!formData.duration ||
+			!formData.maxParticipants
 		) {
-			alert("Please fill in all required fields");
+			console.log("2", formData);
+			return toast.error("Please fill in all required fields.");
+		}
+		console.log("3");
+
+		const { data } = await axios.post("/api/activities", formData, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		console.log("4");
+		if (!data.ok) {
+			toast.error(data.message);
 			return;
 		}
-
-		// Simulate API call
-		setTimeout(() => {
-			alert("Activity created successfully!");
-			router.push("/activities");
-		}, 1000);
+		console.log("5");
+		toast.success("Activity created successfully!");
+		router.push("/activities");
 	};
 
 	return (
@@ -85,19 +103,19 @@ const AddActivityForm = () => {
 				/>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div className="flex flex-col gap-1">
-					<Label htmlFor="activityType" className="mb-1">
+					<Label htmlFor="type" className="mb-1">
 						Activity Type*
 					</Label>
 
 					<Select
-						name="activityType"
-						value={formData.activityType}
+						name="type"
+						value={formData.type}
 						onValueChange={(value) =>
 							setFormData((prev) => ({
 								...prev,
-								activityType: value,
+								type: value,
 							}))
 						}
 					>
@@ -114,14 +132,14 @@ const AddActivityForm = () => {
 				</div>
 
 				<div className="flex flex-col gap-1">
-					<Label htmlFor="locationType" className="mb-1">
+					<Label htmlFor="location" className="mb-1">
 						Location*
 					</Label>
 					<Input
 						type="text"
-						id="locationType"
-						name="locationType"
-						value={formData.locationType}
+						id="location"
+						name="location"
+						value={formData.location}
 						onChange={handleInputChange}
 						required
 						placeholder="e.g., Library, Cafe, Room 101"
@@ -129,7 +147,7 @@ const AddActivityForm = () => {
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div className="flex flex-col gap-1">
 					<Label htmlFor="dateTime" className="mb-1">
 						Date and Time*
@@ -177,7 +195,7 @@ const AddActivityForm = () => {
 				/>
 			</div>
 
-			<div className="flex justify-end space-x-3 pt-2">
+			<div className="flex justify-end pt-2 space-x-3">
 				<Button
 					type="button"
 					variant="outline"
@@ -185,7 +203,11 @@ const AddActivityForm = () => {
 				>
 					Cancel
 				</Button>
-				<Button type="submit" className="bg-primary hover:bg-primary-dark">
+				<Button
+					onClick={handleSubmit}
+					type="submit"
+					className="bg-primary hover:bg-primary-dark"
+				>
 					Create Activity
 				</Button>
 			</div>
