@@ -19,8 +19,9 @@ export const HomeClient = () => {
 
 	const fetchActivities = async () => {
 		try {
-			const { data } = await axios.get("/api/activities?limit=2");
+			const { data } = await axios.get("/api/activities?limit=2&populate=true");
 			if (data.ok) {
+				console.log(data.message, "data");
 				setActivities(data.message);
 			} else {
 				toast.error(data.message);

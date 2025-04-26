@@ -6,7 +6,7 @@ import { Types } from "mongoose";
 import { Groq } from "groq-sdk";
 
 export const POST = async (req, { params }) => {
-	const { id: otherId } = params;
+	const { id: otherId } = await params;
 	const headersList = headers();
 
 	try {

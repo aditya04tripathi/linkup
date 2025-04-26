@@ -20,10 +20,14 @@ export const ActivityProvider = ({ children }) => {
 	const [loading, setLoading] = useState(false);
 	const [activities, setActivities] = useState([]);
 
-	const fetchActivity = async (activityId) => {
+	console.log(activities, "activities");
+
+	const fetchActivity = async (activityId, populate = true) => {
 		setLoading(true);
 		try {
-			const { data } = await axios.get(`/api/activities/${activityId}`);
+			const { data } = await axios.get(
+				`/api/activities/${activityId}?populate=${populate}`
+			);
 			setLoading(false);
 
 			if (data.ok) {

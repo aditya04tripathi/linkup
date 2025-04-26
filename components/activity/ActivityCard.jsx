@@ -6,8 +6,6 @@ import { Calendar, Clock, User } from "lucide-react";
 import Link from "next/link";
 
 export const ActivityCard = ({ activity }) => {
-	const match = activity.match || activity.compatibility / 100;
-
 	return (
 		<div
 			className={cn(
@@ -15,18 +13,6 @@ export const ActivityCard = ({ activity }) => {
 			)}
 		>
 			<div>
-				<div
-					className={cn(
-						"text-sm text-muted-foreground",
-						activity.compatibility < 50
-							? "text-red-400"
-							: activity.compatibility < 75
-							? "text-yellow-400"
-							: "text-green-400"
-					)}
-				>
-					{Math.round(match * 100)}% match
-				</div>
 				<h3 className="flex-[0.8]">{activity.title}</h3>
 			</div>
 			<p className="text-muted-foreground">{activity.description}</p>
