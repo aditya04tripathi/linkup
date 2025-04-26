@@ -12,13 +12,11 @@ import { toast } from "sonner";
 
 export const ActivitiesClient = () => {
 	const [activities, setActivities] = useState([]);
-	const [loading, setLoading] = useState(true);
 	const { user } = useAuth();
 	const router = useRouter();
 
 	const fetchActivities = async () => {
 		try {
-			setLoading(true);
 			const { data } = await axios.get("/api/activities");
 			if (data.ok) {
 				setActivities(data.message);
@@ -28,8 +26,6 @@ export const ActivitiesClient = () => {
 		} catch (error) {
 			console.error("Error loading activities:", error);
 			toast.error("Something went wrong");
-		} finally {
-			setLoading(false);
 		}
 	};
 
@@ -45,23 +41,6 @@ export const ActivitiesClient = () => {
 
 	if (!user) {
 		return null;
-	}
-
-	if (loading) {
-		return (
-			<div className="space-y-4 w-full">
-				<div className="flex justify-between">
-					<div className="h-8 w-1/3 bg-muted rounded"></div>
-					<div className="h-8 w-1/4 bg-muted rounded"></div>
-				</div>
-				<div className="h-12 w-full bg-muted rounded mb-6"></div>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-					{[1, 2, 3, 4].map((i) => (
-						<div key={i} className="h-48 bg-muted rounded animate-pulse"></div>
-					))}
-				</div>
-			</div>
-		);
 	}
 
 	return (

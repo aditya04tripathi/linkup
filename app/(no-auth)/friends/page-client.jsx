@@ -6,68 +6,73 @@ import { Input } from "@/components/ui/input";
 import { Search, Plus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts";
 
 export const FriendsClient = () => {
 	const [users, setUsers] = React.useState([]);
-	const [loading, setLoading] = React.useState(true);
 	const [error, setError] = React.useState(null);
 	const { user } = useAuth();
 	const { getFriendList } = useUser();
 	const router = useRouter();
 
+	console.log("Component rendered, user:", user);
+
 	React.useEffect(() => {
+		console.log("Starting to fetch friend list");
 		getFriendList()
 			.then((res) => {
+				console.log("Friend list fetched successfully:", res);
 				setUsers(res);
 			})
 			.catch((err) => {
+				console.error("Error fetching friend list:", err);
 				setError(err.message);
-			})
-			.finally(() => {
-				setLoading(false);
 			});
 	}, []);
 
 	React.useEffect(() => {
+		console.log("User authentication check:", user);
 		if (!user) {
+			console.log("No user found, redirecting to login");
 			router.push("/login");
 		}
-	}, [user, router]);
+	}, [user]);
 
 	if (!user) {
+		console.log("Rendering null - no user");
 		return null;
 	}
 
-	if (loading) {
-		return (
-			<div className="w-full animate-pulse">
-				<div className="flex items-center justify-between mb-6">
-					<div className="h-6 w-1/3 bg-muted rounded"></div>
-					<div className="h-8 w-1/4 bg-muted rounded"></div>
-				</div>
-				<div className="h-10 w-full bg-muted rounded mb-8"></div>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-					{[1, 2, 3, 4, 5, 6].map((i) => (
-						<div key={i} className="h-64 bg-muted rounded"></div>
-					))}
-				</div>
-			</div>
-		);
-	}
-
 	if (error) {
+		console.log("Rendering error state:", error);
 		return (
 			<div className="w-full text-center py-10">
 				<h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
 				<p className="text-muted-foreground mb-4">{error}</p>
-				<Button onClick={fetchUsers}>Try Again</Button>
+				<Button
+					onClick={() => {
+						console.log("Retry button clicked");
+						getFriendList()
+							.then((res) => {
+								console.log("Friend list re-fetched successfully:", res);
+								setUsers(res);
+								setError(null);
+							})
+							.catch((err) => {
+								console.error("Error re-fetching friend list:", err);
+								setError(err.message);
+							});
+					}}
+				>
+					Try Again
+				</Button>
 			</div>
 		);
 	}
+
+	console.log("Rendering friend list, count:", users.length);
 
 	return (
 		<div className="w-full">
@@ -93,9 +98,20 @@ export const FriendsClient = () => {
 
 			{users.length > 0 ? (
 				<div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-					{users.map((profile) => (
-						<ProfileCard isFriend={true} key={profile._id} profile={profile} />
-					))}
+					{users.map((profile) => {
+						console.log(
+							"Rendering profile:",
+							profile._id,
+							profile.name || profile.email
+						);
+						return (
+							<ProfileCard
+								isFriend={true}
+								key={profile._id}
+								profile={profile}
+							/>
+						);
+					})}
 				</div>
 			) : (
 				<div className="flex flex-col items-center justify-center h-96">

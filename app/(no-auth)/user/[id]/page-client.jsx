@@ -25,7 +25,6 @@ export function UserProfileClient({ id }) {
 		calculateCompatibilityScore,
 	} = useUser();
 	const [user, setUser] = useState(null);
-	const [loading, setLoading] = useState(true);
 	const [compatibility, setCompatibility] = useState(null);
 	const [compatibilityLoading, setCompatibilityLoading] = useState(true);
 	const [isFollowing, setIsFollowing] = useState(false);
@@ -35,7 +34,6 @@ export function UserProfileClient({ id }) {
 	useEffect(() => {
 		const loadUser = async () => {
 			try {
-				setLoading(true);
 				const userData = await fetchUserById(id);
 				console.log(userData);
 				setUser(userData);
@@ -62,8 +60,6 @@ export function UserProfileClient({ id }) {
 			} catch (error) {
 				console.error("Error fetching user:", error);
 				toast.error("Failed to load user profile");
-			} finally {
-				setLoading(false);
 			}
 		};
 
@@ -110,10 +106,6 @@ export function UserProfileClient({ id }) {
 			setActionLoading(false);
 		}
 	};
-
-	if (loading) {
-		return <div className="p-6 text-center">Loading user profile...</div>;
-	}
 
 	if (!user) {
 		return <div className="p-6 text-center">User not found</div>;

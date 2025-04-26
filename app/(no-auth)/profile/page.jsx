@@ -1,4 +1,6 @@
 import { ProfileClient } from "./page-client";
+import LoadingScreen from "@/components/shared/LoadingScreen";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "Your Profile | LinkUp",
@@ -6,5 +8,9 @@ export const metadata = {
 };
 
 export default function ProfilePage() {
-	return <ProfileClient />;
+	return (
+		<Suspense fallback={<LoadingScreen />}>
+			<ProfileClient />
+		</Suspense>
+	);
 }

@@ -3,7 +3,7 @@ import User from "@/models/User";
 import { verify } from "jsonwebtoken";
 import { headers } from "next/headers";
 
-export const POST = async (req) => {
+export const GET = async (req) => {
 	const headerList = await headers();
 	const token = headerList.get("Authorization").split(" ")[1];
 
@@ -27,7 +27,7 @@ export const POST = async (req) => {
 		await connectDB();
 		const user = await User.findOne({
 			_id: id,
-		});
+		}).populate("friends");
 
 		console.log(user.friends);
 
@@ -41,6 +41,7 @@ export const POST = async (req) => {
 			}
 		);
 	} catch (error) {
+		console.error("Error fetching friends:", error);
 		return Response.json(
 			{ ok: false, message: error.message },
 			{

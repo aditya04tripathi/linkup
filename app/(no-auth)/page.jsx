@@ -1,4 +1,6 @@
 import { HomeClient } from "./page-client";
+import LoadingScreen from "@/components/shared/LoadingScreen";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "Home | LinkUp",
@@ -6,5 +8,9 @@ export const metadata = {
 };
 
 export default function HomePage() {
-	return <HomeClient />;
+	return (
+		<Suspense fallback={<LoadingScreen />}>
+			<HomeClient />
+		</Suspense>
+	);
 }

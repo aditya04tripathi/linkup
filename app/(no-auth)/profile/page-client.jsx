@@ -8,13 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { toast } from "sonner";
 
 export function ProfileClient() {
 	const { user, updateUser } = useAuth();
@@ -31,8 +25,6 @@ export function ProfileClient() {
 		preferredGroupSizeMin: user?.preferredGroupSize?.[0] || 2,
 		preferredGroupSizeMax: user?.preferredGroupSize?.[1] || 5,
 	});
-	const [profileImage, setProfileImage] = useState(null);
-	const [previewUrl, setPreviewUrl] = useState(user?.avatar || null);
 	const [saving, setSaving] = useState(false);
 
 	const handleChange = (e) => {
@@ -42,22 +34,6 @@ export function ProfileClient() {
 
 	const handleSliderChange = (name, value) => {
 		setFormData((prev) => ({ ...prev, [name]: value[0] }));
-	};
-
-	const handleSelectChange = (name, value) => {
-		setFormData((prev) => ({ ...prev, [name]: parseInt(value, 10) }));
-	};
-
-	const handleImageChange = (e) => {
-		const file = e.target.files[0];
-		if (file) {
-			setProfileImage(file);
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setPreviewUrl(reader.result);
-			};
-			reader.readAsDataURL(file);
-		}
 	};
 
 	const handleSubmit = async (e) => {
@@ -81,11 +57,9 @@ export function ProfileClient() {
 				],
 			};
 
-			if (profileImage) {
-				updateData.profileImage = profileImage;
-			}
-
 			await updateUser(updateData);
+
+			toast.success("Profile updated successfully!");
 		} catch (error) {
 			console.error("Failed to update profile:", error);
 		} finally {
@@ -94,7 +68,7 @@ export function ProfileClient() {
 	};
 
 	if (!user) {
-		return <div className="p-6">Loading...</div>;
+		return null;
 	}
 
 	return (
@@ -104,7 +78,7 @@ export function ProfileClient() {
 			<form onSubmit={handleSubmit} className="space-y-6">
 				<div className="flex flex-col items-center mb-6">
 					<Avatar className="h-32 w-32 mb-4">
-						<AvatarImage src={previewUrl || ""} alt={user.name} />
+						<AvatarImage src={""} alt={user.name} />
 						<AvatarFallback className="text-2xl">
 							{user.name?.charAt(0).toUpperCase()}
 						</AvatarFallback>

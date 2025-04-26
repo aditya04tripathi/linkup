@@ -1,4 +1,6 @@
 import { UserProfileClient } from "./page-client";
+import LoadingScreen from "@/components/shared/LoadingScreen";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "User Profile | LinkUp",
@@ -7,5 +9,9 @@ export const metadata = {
 
 export default async function UserProfilePage({ params }) {
 	const { id } = await params;
-	return <UserProfileClient id={id} />;
+	return (
+		<Suspense fallback={<LoadingScreen />}>
+			<UserProfileClient id={id} />
+		</Suspense>
+	);
 }

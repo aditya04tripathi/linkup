@@ -4,7 +4,6 @@ import { createContext, useContext, useState } from "react";
 import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
 import { decode } from "jsonwebtoken";
-import Groq from "groq-sdk";
 
 const UserContext = createContext();
 
@@ -314,6 +313,25 @@ export const UserProvider = ({ children }) => {
 		}
 	};
 
+	const getFriendList = async () => {
+		try {
+			const { data } = await axios.get(`/api/users/friends`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			if (data.ok) {
+				return data.message;
+			} else {
+				throw new Error(data.message);
+			}
+		} catch (error) {
+			console.error("Error fetching friend list:", error);
+			throw error;
+		}
+	};
+
 	const fetchAllUsers = async () => {
 		setLoading(true);
 		setError(null);
@@ -354,6 +372,7 @@ export const UserProvider = ({ children }) => {
 				searchUsers,
 				updateUserProfile,
 				fetchUsers,
+				getFriendList,
 				fetchUserById,
 				loading,
 				users,

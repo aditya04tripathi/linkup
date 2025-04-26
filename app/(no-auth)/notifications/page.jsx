@@ -1,4 +1,6 @@
 import { NotificationsClient } from "./page-client";
+import LoadingScreen from "@/components/shared/LoadingScreen";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "Notifications | LinkUp",
@@ -6,5 +8,9 @@ export const metadata = {
 };
 
 export default function NotificationsPage() {
-	return <NotificationsClient />;
+	return (
+		<Suspense fallback={<LoadingScreen />}>
+			<NotificationsClient />
+		</Suspense>
+	);
 }

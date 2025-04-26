@@ -1,4 +1,6 @@
 import { ActivitiesClient } from "./page-client";
+import LoadingScreen from "@/components/shared/LoadingScreen";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "Activities | LinkUp",
@@ -6,5 +8,9 @@ export const metadata = {
 };
 
 export default function ActivitiesPage() {
-	return <ActivitiesClient />;
+	return (
+		<Suspense fallback={<LoadingScreen />}>
+			<ActivitiesClient />
+		</Suspense>
+	);
 }

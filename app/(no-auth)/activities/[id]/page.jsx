@@ -1,4 +1,6 @@
 import ActivityDetailClient from "./page-client";
+import LoadingScreen from "@/components/shared/LoadingScreen";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "Activity Details | LinkUp",
@@ -9,5 +11,9 @@ export const metadata = {
 export default async function ActivityDetailPage({ params }) {
 	const { id } = await params;
 
-	return <ActivityDetailClient id={id} />;
+	return (
+		<Suspense fallback={<LoadingScreen />}>
+			<ActivityDetailClient id={id} />
+		</Suspense>
+	);
 }
