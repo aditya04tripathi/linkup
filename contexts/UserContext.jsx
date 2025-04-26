@@ -92,53 +92,9 @@ export const UserProvider = ({ children }) => {
 		}
 	};
 
-	const getUserIceBreaker = async (userId, otherId) => {
-		const userProfile = await fetchUser(userId._id);
-		if (!userProfile) {
-			throw new Error("User not found");
-		}
-
-		const otherProfile = await fetchUser(otherId._id);
-		if (!otherProfile) {
-			throw new Error("Other user not found");
-		}
-
-		const groq = new Groq({
-			apiKey: "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",
-			dangerouslyAllowBrowser: true,
-		});
-
-		const messages = await groq.chat.completions.create({
-			messages: [
-				{
-					role: "system",
-					content: `You are a helpful assistant that generates fun icebreakers for users based on their profiles. You will be given two user profiles and you need to generate a fun icebreaker that is relevant to their interests.`,
-				},
-				{
-					role: "user",
-					content: `User 1: ${JSON.stringify(userProfile)}`,
-				},
-				{
-					role: "user",
-					content: `User 2: ${JSON.stringify(otherProfile)}`,
-				},
-				{
-					role: "user",
-					content: `The icebreaker should be fun, engaging, and relevant to their interests. The response should be a single sentence that is easy to understand and can be used as an icebreaker in a conversation. There should be no additional text or explanation.`,
-				},
-			],
-			model: "llama-3.1-8b-instant",
-			temperature: 0.75,
-		});
-
-		console.log("Generated icebreaker:", messages.choices[0].message.content);
-
-		return messages.choices[0].message.content;
-	};
-
-	const getFriendList = async () => {
+	const getUserIceBreaker = async (otherId) => {
 		const { data } = await axios.post(
-			`/api/users/friends`,
+			`/api/users/icebreaker/${otherId}`,
 			{},
 			{
 				headers: {
@@ -146,7 +102,6 @@ export const UserProvider = ({ children }) => {
 				},
 			}
 		);
-
 		if (data.ok) {
 			return data.message;
 		} else {
@@ -394,7 +349,6 @@ export const UserProvider = ({ children }) => {
 				followUser,
 				unfollowUser,
 				getUserIceBreaker,
-				getFriendList,
 				fetchAllUsers,
 				calculateCompatibilityScore,
 				searchUsers,

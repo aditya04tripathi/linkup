@@ -83,7 +83,8 @@ export function UserProfileClient({ id }) {
 			return;
 		}
 
-		const response = await getUserIceBreaker(user, currentUser);
+		console.log(user, currentUser, "user and currentUser");
+		const response = await getUserIceBreaker(currentUser._id);
 		setIceBreaker(response);
 	};
 
