@@ -73,6 +73,16 @@ export function UserProfileClient({ id }) {
 	}, [id]);
 
 	const fetchIceBreaker = async () => {
+		if (!currentUser) {
+			toast.error("Please login to generate icebreakers");
+			return;
+		}
+
+		if (!user) {
+			toast.error("User not found");
+			return;
+		}
+
 		const response = await getUserIceBreaker(user, currentUser);
 		setIceBreaker(response);
 	};
