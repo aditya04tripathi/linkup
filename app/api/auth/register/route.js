@@ -1,5 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
+import { createNotification } from "@/lib/notifications";
 
 export const POST = async (req) => {
 	const { username, name, email, password } = await req.json();
@@ -30,6 +32,20 @@ export const POST = async (req) => {
 			email,
 			password,
 		});
+
+		// Add score for account creation
+		await incrementUserScore(
+			newUser._id,
+			SCORE_VALUES.REGISTER,
+			"account registration"
+		);
+
+		// Create welcome notification
+		await createNotification(
+			newUser._id,
+			"system",
+			`Welcome to the platform, ${name || username}!`
+		);
 
 		return Response.json(
 			{

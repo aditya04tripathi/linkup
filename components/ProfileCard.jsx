@@ -16,18 +16,12 @@ const ProfileCard = ({ profile, isFriend = false }) => {
 			<p className="text-sm text-center mb-4 line-clamp-2">{profile.bio}</p>
 
 			<div className="mt-auto w-full flex gap-2">
-				<Link href={`/user/${profile.username}`} className="flex-1">
+				<Link href={`/user/${profile._id}`} className="flex-1">
 					<Button variant="outline" className="w-full">
 						View Profile
 					</Button>
 				</Link>
-				{!isFriend ? (
-					<Button className="flex-1">Add Friend</Button>
-				) : (
-					<Link href={`/message/${profile.username}`} className="flex-1">
-						<Button className="w-full">Message</Button>
-					</Link>
-				)}
+				{!isFriend && <Button className="flex-1">Add Friend</Button>}
 			</div>
 		</div>
 	);

@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
 	const signIn = async (email, password) => {
 		try {
 			const { data } = await axios.post("/api/auth/login", { email, password });
+			console.log(data);
 			if (data.ok) {
 				toast.success("Logged in successfully");
 				setUser(data.message);
@@ -80,19 +81,8 @@ export const AuthProvider = ({ children }) => {
 
 	const updateUser = async (updatedUser) => {
 		try {
-			if (
-				updatedUser.profileImage &&
-				updatedUser.profileImage instanceof File
-			) {
-				const imageUrl = await uploadToCloudinary(updatedUser.profileImage);
-				if (imageUrl) {
-					updatedUser.profilePictureUrl = imageUrl;
-				}
-				delete updatedUser.profileImage;
-			}
-
 			if (token) {
-				await axios.put("/api/auth/me", updatedUser, {
+				await axios.post("/api/auth/me", updatedUser, {
 					headers: { Authorization: `Bearer ${token}` },
 				});
 			}
@@ -104,11 +94,9 @@ export const AuthProvider = ({ children }) => {
 
 			const updatedUserData = { ...user, ...updatedUser };
 			localStorage.setItem("user", JSON.stringify(updatedUserData));
-			toast.success("Profile updated successfully");
 			return updatedUserData;
 		} catch (error) {
 			console.error("Profile update failed:", error);
-			toast.error("Failed to update profile");
 			throw error;
 		}
 	};

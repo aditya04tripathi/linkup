@@ -1,8 +1,10 @@
 import { connectDB } from "@/lib/mongodb";
 import Activity from "@/models/Activity";
+import User from "@/models/User";
 import { headers } from "next/headers";
 import * as jwt from "jsonwebtoken";
 import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
+import { createNotification } from "@/lib/notifications";
 
 export const POST = async (req, { params }) => {
 	const { id } = await params;
@@ -19,7 +21,7 @@ export const POST = async (req, { params }) => {
 			}
 		);
 	}
-	const { id: selfId } = jwt.verify(token, process.env.JWT_SECRET);
+	const { id: userId } = jwt.verify(token, process.env.JWT_SECRET);
 
 	try {
 		await connectDB();
@@ -32,38 +34,51 @@ export const POST = async (req, { params }) => {
 			);
 		}
 
-		if (activity.participants[0].toString() === selfId) {
+		// Check if user is already a participant
+		if (activity.participants.includes(userId)) {
 			return Response.json(
-				{ ok: false, message: "Creator cannot leave the activity" },
-				{ status: 403 }
-			);
-		}
-
-		const participantIndex = activity.participants.findIndex(
-			(participant) => participant.toString() === selfId
-		);
-
-		if (participantIndex === -1) {
-			return Response.json(
-				{ ok: false, message: "You are not part of this activity" },
+				{ ok: false, message: "You are already part of this activity" },
 				{ status: 400 }
 			);
 		}
 
-		activity.participants.splice(participantIndex, 1);
+		// Check if activity is full
+		if (activity.participants.length >= activity.maxParticipants) {
+			return Response.json(
+				{ ok: false, message: "Activity is full" },
+				{ status: 400 }
+			);
+		}
+
+		// Add user to participants
+		activity.participants.push(userId);
 		await activity.save();
 
-		// Decrement user score for leaving an activity
+		// Get host user for notification
+		const user = await User.findById(userId);
+		const hostId = activity.hostId || activity.participants[0];
+
+		// Create notification for activity host
+		await createNotification(
+			hostId,
+			"activity",
+			`${user.name || user.username || user.email} joined your activity: ${
+				activity.title
+			}`,
+			{ relatedId: activity._id, relatedModel: "Activity" }
+		);
+
+		// Add score for joining an activity
 		await incrementUserScore(
-			selfId,
-			SCORE_VALUES.LEAVE_ACTIVITY,
-			"leave activity"
+			userId,
+			SCORE_VALUES.JOIN_ACTIVITY,
+			"join activity"
 		);
 
 		return Response.json(
 			{
 				ok: true,
-				message: "Successfully left the activity",
+				message: "Successfully joined the activity",
 			},
 			{ status: 200 }
 		);

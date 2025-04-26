@@ -1,6 +1,7 @@
 import User from "@/models/User";
 import { decode, verify } from "jsonwebtoken";
 import { headers } from "next/headers";
+import { incrementUserScore, SCORE_VALUES } from "@/lib/scoring";
 
 export const GET = async (req) => {
 	const headersList = await headers();
@@ -56,7 +57,17 @@ export const GET = async (req) => {
 	}
 };
 
-export const PUT = async (req) => {
+export const POST = async (req) => {
+	const body = await req.json();
+
+	if (!body) {
+		return Response.json(
+			{ ok: false, message: "No body provided" },
+			{
+				status: 400,
+			}
+		);
+	}
 	const headersList = await headers();
 	const token = headersList.get("Authorization").split(" ")[1];
 
@@ -80,7 +91,9 @@ export const PUT = async (req) => {
 			);
 		}
 
-		const user = await User.findById(decoded.id);
+		console.log(decoded.id);
+
+		const user = await User.findOne({ _id: decoded.id });
 		if (!user) {
 			return Response.json(
 				{ ok: false, message: "User not found" },
@@ -90,8 +103,14 @@ export const PUT = async (req) => {
 			);
 		}
 
-		const body = await req.json();
 		await User.findByIdAndUpdate(decoded.id, body);
+
+		// Add score for updating profile
+		await incrementUserScore(
+			decoded.id,
+			SCORE_VALUES.UPDATE_PROFILE,
+			"update profile"
+		);
 
 		return Response.json(
 			{

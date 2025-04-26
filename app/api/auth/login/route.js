@@ -45,14 +45,12 @@ export const POST = async (req) => {
 			process.env.JWT_SECRET
 		);
 
-		// Create login notification
 		await createNotification(
 			user._id,
 			"system",
 			`Welcome back, ${user.name || user.email}!`
 		);
 
-		// Increment user score for logging in
 		await incrementUserScore(user._id, SCORE_VALUES.LOGIN, "login");
 
 		return Response.json(
@@ -68,6 +66,7 @@ export const POST = async (req) => {
 			}
 		);
 	} catch (error) {
+		console.log(error);
 		return Response.json(
 			{ ok: false, message: error.message },
 			{

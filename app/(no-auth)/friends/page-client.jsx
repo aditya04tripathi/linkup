@@ -16,11 +16,11 @@ export const FriendsClient = () => {
 	const [loading, setLoading] = React.useState(true);
 	const [error, setError] = React.useState(null);
 	const { user } = useAuth();
-	const { fetchUsers } = useUser();
+	const { getFriendList } = useUser();
 	const router = useRouter();
 
 	React.useEffect(() => {
-		fetchUsers(6)
+		getFriendList()
 			.then((res) => {
 				setUsers(res);
 			})
@@ -99,9 +99,11 @@ export const FriendsClient = () => {
 				</div>
 			) : (
 				<div className="flex flex-col items-center justify-center h-96">
-					<h1 className="text-2xl font-bold mb-4">No Activities Found</h1>
+					<h1 className="text-2xl font-bold mb-4">No friends Found</h1>
 					<p className="text-muted-foreground text-center">
-						No activities found. Create one to get started!
+						Either everyone is already your friend or you haven't added any
+						friends yet. You can find and add friends by clicking the "Add
+						Friends" button above.
 					</p>
 				</div>
 			)}

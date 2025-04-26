@@ -49,15 +49,6 @@ export const EditPersonalityProfile = () => {
 						</div>
 
 						<div className="flex w-full items-stretch flex-col gap-2">
-							<h3>Preferred Group Size (3-5)</h3>
-							<Slider defaultValue={[3, 5]} max={10} />
-							<div className="w-full flex flex-1 items-center justify-between text-muted-foreground">
-								<div>0</div>
-								<div>10</div>
-							</div>
-						</div>
-
-						<div className="flex w-full items-stretch flex-col gap-2">
 							<h3>Academic Interests</h3>
 							<div className="grid grid-cols-2 md:grid-cols-3 gap-2 flex-wrap">
 								{academicInterests.map((interest, idx) => (

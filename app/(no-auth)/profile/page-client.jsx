@@ -7,6 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 export function ProfileClient() {
 	const { user, updateUser } = useAuth();
@@ -18,6 +26,10 @@ export function ProfileClient() {
 		location: user?.location || "",
 		interests: (user?.interests || []).join(", "),
 		academicInterests: (user?.academicInterests || []).join(", "),
+		extroversionLevel: user?.extroversionLevel || 5,
+		energyLevel: user?.energyLevel || 5,
+		preferredGroupSizeMin: user?.preferredGroupSize?.[0] || 2,
+		preferredGroupSizeMax: user?.preferredGroupSize?.[1] || 5,
 	});
 	const [profileImage, setProfileImage] = useState(null);
 	const [previewUrl, setPreviewUrl] = useState(user?.avatar || null);
@@ -26,6 +38,14 @@ export function ProfileClient() {
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
+	};
+
+	const handleSliderChange = (name, value) => {
+		setFormData((prev) => ({ ...prev, [name]: value[0] }));
+	};
+
+	const handleSelectChange = (name, value) => {
+		setFormData((prev) => ({ ...prev, [name]: parseInt(value, 10) }));
 	};
 
 	const handleImageChange = (e) => {
@@ -55,6 +75,10 @@ export function ProfileClient() {
 					.split(",")
 					.map((i) => i.trim())
 					.filter((i) => i),
+				preferredGroupSize: [
+					formData.preferredGroupSizeMin,
+					formData.preferredGroupSizeMax,
+				],
 			};
 
 			if (profileImage) {
@@ -168,6 +192,54 @@ export function ProfileClient() {
 							onChange={handleChange}
 							placeholder="e.g. Computer Science, Mathematics"
 						/>
+					</div>
+
+					<div className="space-y-4">
+						<div className="space-y-2">
+							<div className="flex justify-between items-center">
+								<Label htmlFor="extroversionLevel">Extroversion Level</Label>
+								<span className="text-sm text-muted-foreground">
+									{formData.extroversionLevel}/10
+								</span>
+							</div>
+							<Slider
+								id="extroversionLevel"
+								min={1}
+								max={10}
+								step={1}
+								value={[formData.extroversionLevel]}
+								onValueChange={(value) =>
+									handleSliderChange("extroversionLevel", value)
+								}
+							/>
+							<div className="flex justify-between text-xs text-muted-foreground mt-1">
+								<span>Introvert</span>
+								<span>Extrovert</span>
+							</div>
+						</div>
+
+						<div className="space-y-2">
+							<div className="flex justify-between items-center">
+								<Label htmlFor="energyLevel">Energy Level</Label>
+								<span className="text-sm text-muted-foreground">
+									{formData.energyLevel}/10
+								</span>
+							</div>
+							<Slider
+								id="energyLevel"
+								min={1}
+								max={10}
+								step={1}
+								value={[formData.energyLevel]}
+								onValueChange={(value) =>
+									handleSliderChange("energyLevel", value)
+								}
+							/>
+							<div className="flex justify-between text-xs text-muted-foreground mt-1">
+								<span>Low</span>
+								<span>High</span>
+							</div>
+						</div>
 					</div>
 
 					<Button type="submit" className="w-full" disabled={saving}>

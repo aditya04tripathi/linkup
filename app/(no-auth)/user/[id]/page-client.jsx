@@ -3,32 +3,62 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "sonner";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
 
 export function UserProfileClient({ id }) {
 	const { user: currentUser } = useAuth();
-	const { fetchUserById, followUser, unfollowUser } = useUser();
+	const {
+		fetchUserById,
+		followUser,
+		unfollowUser,
+		getUserIceBreaker,
+		calculateCompatibilityScore,
+	} = useUser();
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [compatibility, setCompatibility] = useState(50); // Default compatibility
+	const [compatibility, setCompatibility] = useState(null);
+	const [compatibilityLoading, setCompatibilityLoading] = useState(true);
 	const [isFollowing, setIsFollowing] = useState(false);
 	const [actionLoading, setActionLoading] = useState(false);
+	const [iceBreaker, setIceBreaker] = useState(null);
 
 	useEffect(() => {
 		const loadUser = async () => {
 			try {
 				setLoading(true);
 				const userData = await fetchUserById(id);
+				console.log(userData);
 				setUser(userData);
 
-				// Check if current user is following this user
 				setIsFollowing(
-					currentUser?.friends?.some((followId) => followId === userData._id)
+					currentUser?.friends?.some((followId) => followId == userData._id)
 				);
+
+				if (userData && currentUser) {
+					setCompatibilityLoading(true);
+					try {
+						const score = await calculateCompatibilityScore(
+							userData,
+							currentUser
+						);
+						setCompatibility(score);
+					} catch (error) {
+						console.error("Error calculating compatibility:", error);
+						setCompatibility(null);
+					} finally {
+						setCompatibilityLoading(false);
+					}
+				}
 			} catch (error) {
 				console.error("Error fetching user:", error);
 				toast.error("Failed to load user profile");
@@ -37,10 +67,15 @@ export function UserProfileClient({ id }) {
 			}
 		};
 
-		if (id) {
+		if (id && currentUser) {
 			loadUser();
 		}
 	}, [id]);
+
+	const fetchIceBreaker = async () => {
+		const response = await getUserIceBreaker(user, currentUser);
+		setIceBreaker(response);
+	};
 
 	const handleFollowToggle = async () => {
 		if (!currentUser) {
@@ -102,8 +137,21 @@ export function UserProfileClient({ id }) {
 				</div>
 
 				<div className="flex-1">
-					<h1 className="text-2xl font-bold mb-1">
-						{user.name || user.username}
+					<h1 className="text-2xl flex justify-between items-center font-bold mb-1">
+						<div>{user.name || user.username}</div>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button onClick={fetchIceBreaker}>Generate Ice Breaker</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>
+										Greetings {currentUser.username}! Here is your icebreaker
+									</DialogTitle>
+								</DialogHeader>
+								<p>{iceBreaker ?? <Loader2 className="animate-spin" />}</p>
+							</DialogContent>
+						</Dialog>
 					</h1>
 					<p className="text-muted-foreground mb-3">
 						{user.occupation || "Member"}
@@ -125,7 +173,18 @@ export function UserProfileClient({ id }) {
 							<h3 className="font-medium text-sm text-muted-foreground">
 								Compatibility
 							</h3>
-							<p>{Math.round(compatibility)}%</p>
+							<p>
+								{compatibilityLoading ? (
+									<span className="inline-flex items-center">
+										Calculating{" "}
+										<Loader2 className="ml-2 h-3 w-3 animate-spin" />
+									</span>
+								) : compatibility !== null ? (
+									`${Math.round(compatibility)}%`
+								) : (
+									"Not available"
+								)}
+							</p>
 						</div>
 					</div>
 				</div>
@@ -204,53 +263,7 @@ export function UserProfileClient({ id }) {
 						<span>High</span>
 					</div>
 				</div>
-
-				<div>
-					<h3 className="font-medium mb-2">Preferred Group Size</h3>
-					{user.preferredGroupSize ? (
-						<p>
-							{user.preferredGroupSize[0]} - {user.preferredGroupSize[1]} people
-						</p>
-					) : (
-						<p>Not specified</p>
-					)}
-				</div>
 			</div>
 		</div>
 	);
 }
-/*
-<TabsContent value="interests" className="py-4">
-	<div className="flex flex-wrap gap-2">
-		{(user.interests || []).length > 0 ? (
-			user.interests.map((interest) => (
-				<div
-					key={interest}
-					className="bg-muted px-3 py-1 rounded-full text-sm"
-				>
-					{interest}
-				</div>
-			))
-		) : (
-			<p>No interests specified</p>
-		)}
-	</div>
-</TabsContent>
-
-<TabsContent value="academic" className="py-4">
-	<div className="flex flex-wrap gap-2">
-		{(user.academicInterests || []).length > 0 ? (
-			user.academicInterests.map((interest) => (
-				<div
-					key={interest}
-					className="bg-muted px-3 py-1 rounded-full text-sm"
-				>
-					{interest}
-				</div>
-			))
-		) : (
-			<p>No academic interests specified</p>
-		)}
-	</div>
-</TabsContent>
-*/
