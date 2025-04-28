@@ -77,11 +77,11 @@ export const POST = async (req, { params }) => {
 					content: `You are a helpful assistant that generates fun icebreakers for users based on their profiles. You will be given two user profiles and you need to generate a fun icebreaker that is relevant to their interests.`,
 				},
 				{
-					role: "user",
+					role: "system",
 					content: `User 1: ${JSON.stringify(userProfile)}`,
 				},
 				{
-					role: "user",
+					role: "system",
 					content: `User 2: ${JSON.stringify(otherProfile)}`,
 				},
 				{
