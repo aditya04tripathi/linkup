@@ -74,7 +74,7 @@ export const POST = async (req, { params }) => {
 			messages: [
 				{
 					role: "system",
-					content: `You are a helpful assistant that generates fun icebreakers for users based on their profiles. You will be given two user profiles and you need to generate a fun icebreaker that is relevant to their interests.`,
+					content: `You are a helpful assistant that generates fun icebreakers for users based on their profiles. You will be given two user profiles, and you need to generate a fun icebreaker that is relevant to their interests. There should be no additional text or explanation. The response should be a single sentence that is easy to understand and can be used as an icebreaker in a conversation.`,
 				},
 				{
 					role: "system",
@@ -86,7 +86,7 @@ export const POST = async (req, { params }) => {
 				},
 				{
 					role: "user",
-					content: `The icebreaker should be fun, engaging, and relevant to their interests. The response should be a single sentence that is easy to understand and can be used as an icebreaker in a conversation. There should be no additional text or explanation.`,
+					content: `The icebreaker should be fun, engaging, and relevant to their interests.`,
 				},
 			],
 			model: "llama-3.1-8b-instant",
